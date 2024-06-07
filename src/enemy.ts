@@ -2,16 +2,22 @@ import { Assets, Container, Sprite } from "pixi.js";
 import { Game } from "./game";
 import { Vector } from "./types";
 import { RuneColor, RuneSymbol, RuneType } from "./gestureRecodniser";
+import { ITargetable } from "./targetable";
+import { HostileSpell } from "./hostileSpell";
 
-export class Enemy {
+export class Enemy implements ITargetable {
     position: Vector;
     sprite: Sprite;
     health: Array<RuneType> = new Array<RuneType>();
     game: Game;
+    range = 100;
     constructor(game: Game) {
         this.game = game;
         this.position = new Vector(0, 0);
         this.sprite = new Sprite(Assets.get("marker"));
+        this.sprite.tint = 0xff0000;
+        this.sprite.anchor.set(0.5);
+        game.enemyContainer.addChild(this.sprite);
 
         this.health = [
             { color: RuneColor.red, symbol: RuneSymbol.circle },
@@ -19,22 +25,68 @@ export class Enemy {
             { color: RuneColor.green, symbol: RuneSymbol.circle },
             { color: RuneColor.red, symbol: RuneSymbol.triangle },
             { color: RuneColor.green, symbol: RuneSymbol.triangle },
-        ]
-
-        game.targetUI.setSymbols(this.health);
+        ];
+        game.player.registerTarget(this);
+        game.enemies.add(this);
     }
 
-    processHit(runeType: RuneType) {
+    showSymbols(): RuneType[] {
+        return this.health;
+    }
+
+    remove() {
+        this.game.enemies.delete(this);
+        this.sprite.destroy();
+        this.game.player.unregisterTarget(this);
+    }
+
+    onSpell(runeType: RuneType) {
         const last = this.health[this.health.length - 1];
-        if(runeType.symbol === last.symbol && runeType.color === last.color) {
+
+        if (runeType.symbol === last.symbol && runeType.color === last.color) {
             this.health.pop();
         }
 
         this.game.targetUI.setSymbols(this.health);
 
+        if (this.health.length === 0) {
+            this.remove();
+            this.game.player.target = undefined;
+        }
     }
 
-    update(dt: number) {
+    speed = 3;
 
+    cooldown = 100;
+    maxCooldown = 100;
+
+    update(dt: number) {
+        const player = this.game.player;
+
+        const prefferedDistance = 450;
+        const maxDistance = 600;
+
+        let distance = this.position.distance(player.position);
+        let ratio = this.cooldown / this.maxCooldown;
+        if(ratio > 0.2) ratio = 1;
+        this.sprite.alpha = 1 - ratio * 0.2;
+        if (distance > maxDistance) {
+            this.cooldown = this.maxCooldown;
+        } else {
+            this.cooldown -= dt;
+
+            let strength = Math.min(Math.max(distance - prefferedDistance, -100), 100) / 100;
+
+            const diff = this.position.diff(player.position);
+            if (this.cooldown < 0) {
+                this.cooldown = this.maxCooldown;
+                const spell = new HostileSpell(this.game);
+                spell.position.set(...this.position.xy());
+                spell.velocity = diff.result().normalize(-10);
+            }
+            this.position.add(diff.normalize(-strength * this.speed));
+        }
+
+        this.sprite.position.set(...this.position.xy());
     }
 }

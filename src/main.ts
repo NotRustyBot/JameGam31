@@ -17,6 +17,7 @@ import { Vector } from "./types";
         square: "square.png",
         circle: "circle.png",
         healthBg: "healthBg.png",
+        projectile: "projectile.png",
     });
 
     await Assets.loadBundle("assets");

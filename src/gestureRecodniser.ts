@@ -14,7 +14,7 @@ export enum RuneSymbol {
     triangle,
 }
 
-enum PlayState {
+export enum PlayState {
     idle,
     playing,
     finished,
@@ -129,7 +129,7 @@ export class GestureRecodniser {
         if (this.runeColor == undefined) {
             throw new Error("RuneColor is undefined");
         }
-        this.game.player.target.processHit({ color: this.runeColor, symbol: this.runeSymbol });
+        this.game.player.readyRune({ color: this.runeColor, symbol: this.runeSymbol });
     }
 
     failSymbol() {
@@ -155,11 +155,11 @@ export class GestureRecodniser {
             }
         } else if (this.playState == PlayState.finished) {
             if (this.playCooldown > 0) {
-                this.handleSuccess();
                 this.playCooldown -= dt;
-            } else {
-                if (this.isMouseNearCenter() || !this.game.mouse.down) this.playState = PlayState.idle;
             }
+            this.playCooldown = Math.max(0, this.playCooldown);
+            this.handleSuccess();
+            if (!this.game.mouse.down) this.playState = PlayState.idle;
         } else {
             if (this.game.mouse.down && this.playState == PlayState.idle) {
                 this.playState = PlayState.playing;
@@ -197,33 +197,37 @@ export class GestureRecodniser {
 
     handleSuccess() {
         if (this.points.length > 0) {
+            let alpha = 0.5;
+            if (this.game.mouseWorldPosition().distanceSquared(this.game.player.position) < this.game.player.targetRange**2) {
+                alpha = 1;
+            }
+
             let color = 0xffffff;
             if (this.runeColor !== undefined) {
                 color = runeColorDictionary[this.runeColor];
             }
 
             let ratio = this.playCooldown / this.successCooldown;
+            const size = this.game.camera.size.x / 6;
 
-            let coord = this.runeToPosition(this.playedArray[0]);
+            let coord = this.runeOffset(this.playedArray[0], size * (0.5 + ratio), this.game.mouse.position);
             this.graphics.moveTo(coord.x, coord.y);
 
             if (this.runeSymbol == RuneSymbol.circle) {
-                const size = this.game.camera.size.x / 6;
-
-                this.graphics.circle(this.game.camera.size.x / 2, this.game.camera.size.y / 2, size);
+                this.graphics.circle(this.game.mouse.position.x, this.game.mouse.position.y, size * (0.5 + ratio));
                 this.graphics.fill({ color: color, alpha: ratio * 0.25 });
-                this.graphics.stroke({ color: color, alpha: 1 - ratio, width: 5 });
+                this.graphics.stroke({ color: color, alpha: alpha * (1 - ratio), width: 5 });
             } else {
                 for (const played of this.playedArray) {
-                    coord = this.runeToPosition(played);
+                    coord = this.runeOffset(played, size * (0.5 + ratio), this.game.mouse.position);
                     this.graphics.lineTo(coord.x, coord.y);
                 }
 
-                coord = this.runeToPosition(this.playedArray[0]);
+                coord = this.runeOffset(this.playedArray[0], size * (0.5 + ratio), this.game.mouse.position);
                 this.graphics.lineTo(coord.x, coord.y);
 
                 this.graphics.fill({ color: color, alpha: ratio * 0.25 });
-                this.graphics.stroke({ color: color, alpha: 1 - ratio, width: 5 });
+                this.graphics.stroke({ color: color, alpha: alpha * (1 - ratio), width: 5 });
             }
         }
     }
@@ -232,6 +236,11 @@ export class GestureRecodniser {
         const size = this.game.camera.size.x / 6;
         const rune = this.runeSetup[runeIndex];
         return new Vector(rune.x, rune.y).mult(size).add({ x: this.game.camera.size.x / 2, y: this.game.camera.size.y / 2 });
+    }
+
+    runeOffset(runeIndex: number, size: number, offset: Vector) {
+        const rune = this.runeSetup[runeIndex];
+        return new Vector(rune.x, rune.y).mult(size).add(offset);
     }
 
     handlePlaying() {
