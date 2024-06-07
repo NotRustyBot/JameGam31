@@ -28,7 +28,6 @@ import { threshold } from './shader/someFilter';
 
     app.ticker.add((time) =>
     {
-
         threshold.resources.timeUniforms.uniforms.uTime += 0.01 * time.deltaTime;
         console.log(threshold.resources.timeUniforms.uniforms.uTime);
         
