@@ -13,5 +13,5 @@ uniform sampler2D uTexture;
 uniform float uTime;
 
 void main() {
-    finalColor = normalize(texture(uTexture, vTextureCoord + vec2((sin(uTime * 5. + vTextureCoord.y * 10.)) * 0.5 * (vTextureCoord.y), 0.)));
+    finalColor = normalize(texture(uTexture, vTextureCoord + vec2((sin(uTime * 5. + vTextureCoord.y * 10.)) * 0.25 * (vTextureCoord.y), 0.)));
 }
