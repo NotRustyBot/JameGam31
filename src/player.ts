@@ -4,7 +4,6 @@ import { Vector } from "./types";
 import { Enemy } from "./enemy";
 import { ITargetable } from "./targetable";
 import { PlayState, RuneType } from "./gestureRecodniser";
-import { HostileSpell } from "./hostileSpell";
 
 export class Player {
     position: Vector = new Vector();

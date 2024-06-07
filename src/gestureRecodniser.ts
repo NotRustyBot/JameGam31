@@ -110,7 +110,6 @@ export class GestureRecodniser {
             this.playedArray.push(temp!);
         }
 
-
         for (const symbols in validSymbols) {
             const runeSymbol = RuneSymbol[symbols as keyof typeof RuneSymbol];
             const symbol = validSymbols[runeSymbol];
@@ -155,7 +154,7 @@ export class GestureRecodniser {
 
     successSymbol(symbol: RuneSymbol) {
         console.log("cast", symbol);
-        
+
         this.playState = PlayState.finished;
         this.playCooldown = this.successCooldown;
         this.runeSymbol = symbol;
@@ -333,4 +332,20 @@ export class GestureRecodniser {
             this.graphics.stroke({ color: color, alpha: 2, width: 5 });
         }
     }
+}
+
+export function areRuneTypesEqual(a: RuneType, b: RuneType) {
+    if (a.color == b.color && a.symbol == b.symbol) {
+        return true;
+    }
+    return false;
+}
+
+export function randomRuneType(useTypes?: Array<RuneSymbol>): RuneType {
+    if (useTypes === undefined) {
+        useTypes = [...Object.values(RuneSymbol)];
+    }
+
+    const index = Math.floor(Math.random() * useTypes.length);
+    return { color: Math.floor(Math.random() * 3), symbol: useTypes[index] };
 }

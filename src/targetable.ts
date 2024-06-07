@@ -5,5 +5,8 @@ export interface ITargetable {
     position: Vector;
     range: number;
     onSpell(rune: RuneType): void;
-    showSymbols(): Array<RuneType>;
+    showSymbols(): {
+        runes: Array<RuneType>;
+        count: number;
+    }
 }

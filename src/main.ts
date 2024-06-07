@@ -18,6 +18,7 @@ import { Vector } from "./types";
         circle: "circle.png",
         healthBg: "healthBg.png",
         projectile: "projectile.png",
+        totem: "totem.png",
     });
 
     await Assets.loadBundle("assets");
@@ -28,9 +29,9 @@ import { Vector } from "./types";
     const mouse = {
         position: new Vector(),
         down: false,
-    }
+    };
     const game = new Game();
-    game.init(app, keys, mouse);
+
     document.addEventListener("keydown", (e) => {
         keys[e.key.toLowerCase()] = true;
     });
@@ -41,14 +42,22 @@ import { Vector } from "./types";
 
     document.addEventListener("mousedown", (e) => {
         mouse.down = true;
-    })
+    });
 
     document.addEventListener("mouseup", (e) => {
         mouse.down = false;
-    })
+    });
 
     document.addEventListener("mousemove", (e) => {
         mouse.position.x = e.clientX;
         mouse.position.y = e.clientY;
-    })
+    });
+
+    await new Promise<void>((resolve) => {
+        document.addEventListener("mousedown", (e) => {
+            resolve();
+        });
+    });
+
+    game.init(app, keys, mouse);
 })();
