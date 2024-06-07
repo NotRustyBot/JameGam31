@@ -137,6 +137,12 @@ export class GestureRecodniser {
         this.playCooldown = this.failCooldown;
     }
 
+    isMouseNearCenter() {
+        const center = new Vector(this.game.camera.size.x / 2, this.game.camera.size.y / 2);
+        const distance = center.distance(this.game.mouse.position);
+        return distance < 100;
+    }
+
     update(dt: number) {
         this.graphics.clear();
 
@@ -145,14 +151,14 @@ export class GestureRecodniser {
                 this.handleFailing();
                 this.playCooldown -= dt;
             } else {
-                if (!this.game.mouse.down) this.playState = PlayState.idle;
+                if (this.isMouseNearCenter() || !this.game.mouse.down) this.playState = PlayState.idle;
             }
         } else if (this.playState == PlayState.finished) {
             if (this.playCooldown > 0) {
                 this.handleSuccess();
                 this.playCooldown -= dt;
             } else {
-                if (!this.game.mouse.down) this.playState = PlayState.idle;
+                if (this.isMouseNearCenter() || !this.game.mouse.down) this.playState = PlayState.idle;
             }
         } else {
             if (this.game.mouse.down && this.playState == PlayState.idle) {
@@ -164,7 +170,11 @@ export class GestureRecodniser {
 
             if (this.playState == PlayState.playing) {
                 if (!this.game.mouse.down) {
-                    this.failSymbol();
+                    if (this.playedArray.length > 0) {
+                        this.failSymbol();
+                    } else {
+                        this.playState = PlayState.idle;
+                    }
                     return;
                 }
                 this.handlePlaying();
