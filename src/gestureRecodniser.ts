@@ -21,7 +21,7 @@ enum PlayState {
     failed,
 }
 
-const runeColorDictionary: Record<RuneColor, number> = {
+export const runeColorDictionary: Record<RuneColor, number> = {
     [RuneColor.red]: 0xff5555,
     [RuneColor.green]: 0x55ff55,
     [RuneColor.blue]: 0x5555ff,
@@ -39,14 +39,21 @@ type RuneMark = {
     color: RuneColor;
 };
 
+export type RuneType = {
+    color: RuneColor;
+    symbol: RuneSymbol;
+};
+
 export class GestureRecodniser {
     game: Game;
     isGestureUI: boolean = false;
     runeColor: RuneColor | undefined = undefined;
+    runeSymbol: RuneSymbol | undefined = undefined;
     points: Vector[] = [];
     playState: PlayState = PlayState.idle;
     playCooldown = 0;
-    readonly playCooldownMax = 50;
+    readonly successCooldown = 25;
+    readonly failCooldown = 100;
     runeSetup: Array<RuneMark> = [
         { x: 0, y: -1, color: RuneColor.red },
         { x: 0.75, y: -0.5, color: RuneColor.green },
@@ -117,12 +124,17 @@ export class GestureRecodniser {
 
     successSymbol(symbol: RuneSymbol) {
         this.playState = PlayState.finished;
-        this.playCooldown = this.playCooldownMax;
+        this.playCooldown = this.successCooldown;
+        this.runeSymbol = symbol;
+        if (this.runeColor == undefined) {
+            throw new Error("RuneColor is undefined");
+        }
+        this.game.player.target.processHit({ color: this.runeColor, symbol: this.runeSymbol });
     }
 
     failSymbol() {
         this.playState = PlayState.failed;
-        this.playCooldown = this.playCooldownMax;
+        this.playCooldown = this.failCooldown;
     }
 
     update(dt: number) {
@@ -133,14 +145,14 @@ export class GestureRecodniser {
                 this.handleFailing();
                 this.playCooldown -= dt;
             } else {
-                this.playState = PlayState.idle;
+                if (!this.game.mouse.down) this.playState = PlayState.idle;
             }
         } else if (this.playState == PlayState.finished) {
             if (this.playCooldown > 0) {
                 this.handleSuccess();
                 this.playCooldown -= dt;
             } else {
-                this.playState = PlayState.idle;
+                if (!this.game.mouse.down) this.playState = PlayState.idle;
             }
         } else {
             if (this.game.mouse.down && this.playState == PlayState.idle) {
@@ -168,7 +180,7 @@ export class GestureRecodniser {
             }
 
             let color = 0xffffff;
-            let ratio = this.playCooldown / this.playCooldownMax;
+            let ratio = this.playCooldown / this.failCooldown;
             this.graphics.stroke({ color: color, alpha: ratio, width: 5 + 50 * (1 - ratio) });
         }
     }
@@ -180,20 +192,29 @@ export class GestureRecodniser {
                 color = runeColorDictionary[this.runeColor];
             }
 
-            let ratio = this.playCooldown / this.playCooldownMax;
+            let ratio = this.playCooldown / this.successCooldown;
 
             let coord = this.runeToPosition(this.playedArray[0]);
             this.graphics.moveTo(coord.x, coord.y);
 
-            for (const played of this.playedArray) {
-                coord = this.runeToPosition(played);
-                this.graphics.lineTo(coord.x, coord.y);
-            }
-            coord = this.runeToPosition(this.playedArray[0]);
-            this.graphics.lineTo(coord.x, coord.y);
+            if (this.runeSymbol == RuneSymbol.circle) {
+                const size = this.game.camera.size.x / 6;
 
-            this.graphics.fill({ color: color, alpha: ratio * 0.25 });
-            this.graphics.stroke({ color: color, alpha: 1 - ratio, width: 5 });
+                this.graphics.circle(this.game.camera.size.x / 2, this.game.camera.size.y / 2, size);
+                this.graphics.fill({ color: color, alpha: ratio * 0.25 });
+                this.graphics.stroke({ color: color, alpha: 1 - ratio, width: 5 });
+            } else {
+                for (const played of this.playedArray) {
+                    coord = this.runeToPosition(played);
+                    this.graphics.lineTo(coord.x, coord.y);
+                }
+
+                coord = this.runeToPosition(this.playedArray[0]);
+                this.graphics.lineTo(coord.x, coord.y);
+
+                this.graphics.fill({ color: color, alpha: ratio * 0.25 });
+                this.graphics.stroke({ color: color, alpha: 1 - ratio, width: 5 });
+            }
         }
     }
 

@@ -13,6 +13,10 @@ import { Vector } from "./types";
         jglogo: "jglogo.png",
         marker: "marker.png",
         sraf: "sraf.png",
+        triangle: "triangle.png",
+        square: "square.png",
+        circle: "circle.png",
+        healthBg: "healthBg.png",
     });
 
     await Assets.loadBundle("assets");

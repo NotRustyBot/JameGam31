@@ -1,17 +1,20 @@
 import { Assets, Sprite } from "pixi.js";
 import { Game } from "./game";
 import { Vector } from "./types";
+import { Enemy } from "./enemy";
 
 export class Player {
     position: Vector = new Vector();
     game: Game;
     speed: number = 10;
     sprite: Sprite;
+    target: Enemy;
     constructor(game: Game) {
         this.game = game;
         this.sprite = new Sprite(Assets.get("marker"));
         game.playerContainer.addChild(this.sprite);
         game.camera.follow(this);
+        this.target = new Enemy(game);
     }
 
     update(dt: number) {
@@ -32,7 +35,7 @@ export class Player {
             controlVector.y = 1;
         }
 
-        if(controlVector.lengthSquared() > 0){
+        if (controlVector.lengthSquared() > 0) {
             controlVector.normalize(this.speed);
             this.position.add(controlVector.mult(dt));
         }
