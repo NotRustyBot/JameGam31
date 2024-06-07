@@ -175,10 +175,7 @@ export class GestureRecodniser {
 
     handleSuccess() {
         if (this.points.length > 0) {
-            this.graphics.moveTo(this.points[0].x, this.points[0].y);
-            for (const point of this.points) {
-                this.graphics.lineTo(point.x, point.y);
-            }
+
 
             let color = 0xffffff;
             if (this.runeColor !== undefined) {
@@ -186,8 +183,26 @@ export class GestureRecodniser {
             }
 
             let ratio = this.playCooldown / this.playCooldownMax;
-            this.graphics.stroke({ color: color, alpha: 1 - (ratio*0.5), width: 5 });
+
+            let coord = this.runeToPosition(this.playedArray[0]);
+            this.graphics.moveTo(coord.x, coord.y);
+
+            for (const played of this.playedArray) {
+                coord = this.runeToPosition(played);
+                this.graphics.lineTo(coord.x, coord.y);
+            }
+            coord = this.runeToPosition(this.playedArray[0]);
+            this.graphics.lineTo(coord.x, coord.y);
+
+            this.graphics.fill({ color: color, alpha: ratio * 0.25 });
+            this.graphics.stroke({ color: color, alpha: 1 - ratio, width: 5 });
         }
+    }
+
+    runeToPosition(runeIndex: number) {
+        const size = this.game.camera.size.x / 6;
+        const rune = this.runeSetup[runeIndex];
+        return new Vector(rune.x, rune.y).mult(size).add({ x: this.game.camera.size.x / 2, y: this.game.camera.size.y / 2 });
     }
 
     handlePlaying() {
@@ -200,7 +215,7 @@ export class GestureRecodniser {
 
         let index = 0;
         for (const rune of this.runeSetup) {
-            const runePosition = new Vector(rune.x, rune.y).mult(size).add({ x: this.game.camera.size.x / 2, y: this.game.camera.size.y / 2 });
+            const runePosition = this.runeToPosition(index);
             this.graphics.circle(runePosition.x, runePosition.y, 0.3 * size);
             this.graphics.fill({ color: runeColorDictionary[rune.color], alpha: 0.25 });
             this.graphics.stroke({ color: runeColorDictionary[rune.color], alpha: 0.75, width: 20 });
