@@ -5,7 +5,10 @@ import { RuneColor, RuneSymbol, RuneType, runeColorDictionary } from "./gestureR
 const symbolToSprite: Record<RuneSymbol, string> = {
     [RuneSymbol.circle]: "circle",
     [RuneSymbol.square]: "square",
+    [RuneSymbol.star]: "star",
     [RuneSymbol.triangle]: "triangle",
+    [RuneSymbol.downangle]: "downangle",
+    [RuneSymbol.eight]: "eight",
 };
 
 export class TargetUI {

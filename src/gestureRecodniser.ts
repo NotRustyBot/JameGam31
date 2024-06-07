@@ -9,9 +9,12 @@ export enum RuneColor {
 }
 
 export enum RuneSymbol {
-    circle,
-    square,
-    triangle,
+    circle = "circle",
+    square = "square",
+    star = "star",
+    triangle = "triangle",
+    downangle = "downangle",
+    eight = "eight",
 }
 
 export enum PlayState {
@@ -29,8 +32,11 @@ export const runeColorDictionary: Record<RuneColor, number> = {
 
 const validSymbols: Record<RuneSymbol, Array<number>> = {
     [RuneSymbol.triangle]: [0, 2, 4],
+    [RuneSymbol.downangle]: [1, 3, 5],
     [RuneSymbol.square]: [1, 2, 4, 5],
+    [RuneSymbol.star]: [0, 2, 5, 1, 4],
     [RuneSymbol.circle]: [0, 1, 2, 3, 4, 5],
+    [RuneSymbol.eight]: [1, 2, 5, 4],
 };
 
 type RuneMark = {
@@ -83,6 +89,10 @@ export class GestureRecodniser {
                 likelyShape = RuneSymbol.square;
                 break;
 
+            case 5:
+                likelyShape = RuneSymbol.star;
+                break;
+
             case 6:
                 likelyShape = RuneSymbol.circle;
                 break;
@@ -90,39 +100,62 @@ export class GestureRecodniser {
             default:
                 this.failSymbol();
                 return;
-                break;
         }
 
-        let compareToSymbol = validSymbols[likelyShape];
         //smallest from playedArray
         const smallest = Math.min(...this.playedArray);
+
         while (smallest != this.playedArray[0]) {
             let temp = this.playedArray.shift();
             this.playedArray.push(temp!);
         }
 
-        if (this.playedArray[1] > this.playedArray[2]) {
-            //reverse the array
+
+        for (const symbols in validSymbols) {
+            const runeSymbol = RuneSymbol[symbols as keyof typeof RuneSymbol];
+            const symbol = validSymbols[runeSymbol];
+            if (symbol.length != this.playedArray.length) continue;
+
+            let allGood = true;
+            for (let i = 0; i < symbol.length; i++) {
+                if (symbol[i] != this.playedArray[i]) {
+                    allGood = false;
+                    break;
+                }
+            }
+
+            if (allGood) {
+                this.successSymbol(runeSymbol);
+                return;
+            }
+
+            allGood = true;
+
             this.playedArray.reverse();
             while (smallest != this.playedArray[0]) {
                 let temp = this.playedArray.shift();
                 this.playedArray.push(temp!);
             }
-        }
 
-        let allGood = true;
-        for (let i = 0; i < compareToSymbol.length; i++) {
-            if (compareToSymbol[i] != this.playedArray[i]) {
-                allGood = false;
-                this.failSymbol();
+            for (let i = 0; i < symbol.length; i++) {
+                if (symbol[i] != this.playedArray[i]) {
+                    allGood = false;
+                    break;
+                }
+            }
+
+            if (allGood) {
+                this.successSymbol(runeSymbol);
                 return;
             }
         }
 
-        this.successSymbol(likelyShape);
+        this.failSymbol();
     }
 
     successSymbol(symbol: RuneSymbol) {
+        console.log("cast", symbol);
+        
         this.playState = PlayState.finished;
         this.playCooldown = this.successCooldown;
         this.runeSymbol = symbol;
@@ -198,7 +231,7 @@ export class GestureRecodniser {
     handleSuccess() {
         if (this.points.length > 0) {
             let alpha = 0.5;
-            if (this.game.mouseWorldPosition().distanceSquared(this.game.player.position) < this.game.player.targetRange**2) {
+            if (this.game.mouseWorldPosition().distanceSquared(this.game.player.position) < this.game.player.targetRange ** 2) {
                 alpha = 1;
             }
 
@@ -268,7 +301,6 @@ export class GestureRecodniser {
                 if (this.runeColor == undefined) {
                     this.runeColor = rune.color;
                     this.playedArray.push(index);
-                    console.log(index);
                 } else {
                     const lastAdded = this.playedArray[this.playedArray.length - 1];
 
