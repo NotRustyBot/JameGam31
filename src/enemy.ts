@@ -84,7 +84,7 @@ export class Enemy implements ITargetable {
                 spell.position.set(...this.position.xy());
                 spell.velocity = diff.result().normalize(-10);
             }
-            this.position.add(diff.normalize(-strength * this.speed));
+            this.position.add(diff.normalize(-strength * this.speed * dt));
         }
 
         this.sprite.position.set(...this.position.xy());

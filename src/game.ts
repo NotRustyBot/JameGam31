@@ -1,7 +1,7 @@
 import { Application, Assets, Container, Sprite } from "pixi.js";
 import { Player } from "./player";
 import { Camera } from "./camera";
-import { GestureRecodniser } from "./gestureRecodniser";
+import { GestureRecodniser, PlayState } from "./gestureRecodniser";
 import { Mouse } from "./mouse";
 import { TargetUI } from "./targetUi";
 import { Enemy } from "./enemy";
@@ -48,6 +48,12 @@ export class Game {
     }
 
     loop(dt: number) {
+
+
+        if(this.gestureRecodiniser.playState == PlayState.playing) {
+            dt *= 0.1;
+        }
+
         this.player.update(dt);
         this.camera.update(dt);
         this.targetUI.update(dt);
