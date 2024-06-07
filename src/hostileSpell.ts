@@ -30,7 +30,7 @@ export class HostileSpell {
         this.life -= dt;
 
         this.sprite.alpha = (this.life / 100) * 0.5 + 0.5;
-        this.position.add(this.velocity.mult(dt));
+        this.position.add(this.velocity.result().mult(dt));
         this.sprite.position.set(...this.position.xy());
     }
 }
