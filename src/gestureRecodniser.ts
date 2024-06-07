@@ -175,8 +175,6 @@ export class GestureRecodniser {
 
     handleSuccess() {
         if (this.points.length > 0) {
-
-
             let color = 0xffffff;
             if (this.runeColor !== undefined) {
                 color = runeColorDictionary[this.runeColor];
@@ -217,7 +215,13 @@ export class GestureRecodniser {
         for (const rune of this.runeSetup) {
             const runePosition = this.runeToPosition(index);
             this.graphics.circle(runePosition.x, runePosition.y, 0.3 * size);
-            this.graphics.fill({ color: runeColorDictionary[rune.color], alpha: 0.25 });
+
+            let alpha = 0;
+            if (this.playedArray.includes(index)) {
+                alpha = 0.5;
+            }
+
+            this.graphics.fill({ color: runeColorDictionary[rune.color], alpha: alpha });
             this.graphics.stroke({ color: runeColorDictionary[rune.color], alpha: 0.75, width: 20 });
 
             if (currentMouse.distance(runePosition) < 0.25 * size) {
