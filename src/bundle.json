@@ -57,5 +57,9 @@
     "tutorial_redTriangle": "tutorial/redTriangle.png",
     "tutorial_combat": "tutorial/combat.png",
     "tutorial_totems": "tutorial/totems.png",
-    "tutorial_missile": "tutorial/missile.png"
+    "tutorial_missile": "tutorial/missile.png",
+
+
+    "mainProfile": "mainProfile.png",
+    "bubble": "bubble.png"
 }

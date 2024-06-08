@@ -1,11 +1,14 @@
 import { Game } from "./game";
 import { Howl } from "howler";
 
+import textLines from "./linesText.json";
+
 export class SoundManager {
     musicTracks: Record<string, MusicTrack> = {};
     game: Game;
     danger = 0;
     masterVolume = 0.3;
+    music = 1;
     constructor(game: Game) {
         this.game = game;
 
@@ -54,11 +57,11 @@ export class SoundManager {
             combat.howlA.seek(0);
         }
 
-        exploration.howlA.volume(this.masterVolume);
-        exploration.howlB.volume(this.masterVolume);
+        exploration.howlA.volume(this.masterVolume * this.music);
+        exploration.howlB.volume(this.masterVolume * this.music);
 
-        combat.howlA.volume(this.combatVolume * this.masterVolume);
-        combat.howlB.volume(this.combatVolume * this.masterVolume);
+        combat.howlA.volume(this.combatVolume * this.masterVolume * this.music);
+        combat.howlB.volume(this.combatVolume * this.masterVolume * this.music);
 
         if (this.danger > 0.5) {
             this.combatVolume += 0.01;
@@ -69,6 +72,27 @@ export class SoundManager {
         this.combatVolume = Math.min(1, Math.max(0, this.combatVolume));
 
         this.danger /= 1.1;
+    }
+
+    voiceQueue: string[] = [];
+    voicePlaying = false;
+    voiceline(name: string) {
+        if (this.voicePlaying) {
+            this.voiceQueue.push(name);
+            return;
+        }
+        this.voicePlaying = true;
+        this.music = 0.3;
+        const howl = new Howl({ src: [`sounds/voice/${name}.wav`] });
+        this.game.splash.monologue(textLines[name as keyof typeof textLines], howl.duration() * 60);
+        howl.play();
+        howl.on("end", () => {
+            this.music = 1;
+            this.voicePlaying = false;
+            if (this.voiceQueue.length > 0) {
+                this.voiceline(this.voiceQueue.shift()!);
+            }
+        });
     }
 }
 

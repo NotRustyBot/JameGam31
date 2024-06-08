@@ -112,7 +112,7 @@
     { "template": { "name": "candle", "image": "candle", "scale": 0.1 }, "position": { "x": 5993.749999999999, "y": 1403.4999999999995 } },
     { "template": { "name": "redDust", "image": "redDust" }, "position": { "x": 5848.499999999999, "y": 1459.4999999999995 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 8265.149999999998, "y": 1562.3000000000006 } },
-    { "template": { "name": "wizard", "image": "wizard", "health": 4, "family": "default" }, "position": { "x": 8645.749999999998, "y": 1555.7000000000007 } },
+    { "template": { "name": "wizard", "image": "wizard", "health": 4, "family": "default", "tag": "wizard1" }, "position": { "x": 8645.749999999998, "y": 1555.7000000000007 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 8551.149999999998, "y": 1725.1000000000008 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 8729.349999999999, "y": 1835.1000000000008 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 8806.349999999999, "y": 1925.3000000000009 } },

@@ -77,9 +77,9 @@ export class Game {
         this.worldContainer.addChild(this.poiContainer);
         this.worldContainer.addChild(this.playerContainer);
         this.worldContainer.addChild(this.enemyContainer);
-        this.worldContainer.addChild(this.particlesContainer);
         this.worldContainer.addChild(this.spellsContainer);
         this.worldContainer.addChild(this.shadowGraphics);
+        this.worldContainer.addChild(this.particlesContainer);
         this.worldContainer.addChild(this.targetUIContainer);
         this.gestureRecodiniser = new GestureRecodniser(this);
         this.soundManager = new SoundManager(this);

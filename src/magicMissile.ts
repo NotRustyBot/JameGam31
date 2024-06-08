@@ -32,7 +32,6 @@ export class MagicMissile extends HostileSpell implements ITargetable {
 
     speed = 8;
 
-    particleCooldown = 0;
     override update(dt: number): void {
         const angle = Math.atan2(this.position.y - this.game.player.position.y, this.position.x - this.game.player.position.x);
         const idealVelocity = Vector.fromAngle(angle + Math.PI).mult(this.speed);
@@ -48,7 +47,6 @@ export class MagicMissile extends HostileSpell implements ITargetable {
             }
         }
 
-        this.particleCooldown += dt;
 
         while (this.particleCooldown > 0) {
             this.game.splash.magicSpark(this.position.result(), 0x9999ff, this.velocity.result());

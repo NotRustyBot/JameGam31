@@ -24,7 +24,7 @@ export class Wizard extends EnemyBase {
         const player = this.game.player;
 
         const prefferedDistance = 420;
-        const maxDistance = 600;
+        const maxDistance = 900;
 
         let distance = this.position.distance(player.position);
         let ratio = this.cooldown / this.maxCooldown;
@@ -44,9 +44,9 @@ export class Wizard extends EnemyBase {
                 let spell;
                 if (this.type == 0) {
                     spell = new HostileSpell(this.game);
-                    this.cooldown = this.maxCooldown * 2;
-                } else {
-                    spell = new MagicMissile(this.game);
+                    } else {
+                        spell = new MagicMissile(this.game);
+                        this.cooldown = this.maxCooldown * 2;
                 }
                 spell.position.set(...this.position.xy());
                 spell.velocity = diff.result().normalize(-10);

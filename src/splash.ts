@@ -1,4 +1,4 @@
-import { Assets, Graphics, Sprite } from "pixi.js";
+import { Assets, Container, Graphics, Sprite, Text } from "pixi.js";
 import { Game } from "./game";
 import { Vector } from "./types";
 
@@ -27,10 +27,10 @@ export class Splash {
 
     tutorial(graphic: string, time: number) {
         const sprite = new Sprite(Assets.get(graphic));
-        sprite.anchor.set(0.5, 0);
+        sprite.anchor.set(1, 0);
+        sprite.x = this.game.camera.size.x;
         this.game.overlayContainer.addChild(sprite);
         let elapsed = 0;
-        sprite.position.x = this.game.camera.size.x / 2;
         const h = (dt: number) => {
             elapsed += dt;
 
@@ -47,6 +47,45 @@ export class Splash {
                 sprite.destroy();
             }
             this.game.timeManager.requestRate(0.03);
+        };
+        this.happenings.add(h);
+    }
+
+    monologue(text: string, time: number) {
+        const container = new Container();
+        const mainSprite = new Sprite(Assets.get("mainProfile"));
+        const bubble = new Sprite(Assets.get("bubble"));
+        const textSprie = new Text({ text: "", style: { fontSize: 25, fill: 0x000000, wordWrap: true, wordWrapWidth: bubble.width - 130 } });
+        textSprie.x = -bubble.width / 2 + 110;
+        textSprie.y = -80;
+        bubble.anchor.set(0.5);
+        mainSprite.anchor.set(0.5);
+        mainSprite.x = -bubble.width / 2 - 50;
+        container.addChild(bubble, mainSprite, textSprie);
+        this.game.overlayContainer.addChild(container);
+        container.position.x = this.game.camera.size.x / 2;
+        container.position.y = this.game.camera.size.y + 500;
+        let elapsed = 0;
+        time += 100;
+        const h = (dt: number) => {
+            const ratio = elapsed / (time - 100);
+            const substring = text.substring(0, Math.floor(text.length * ratio));
+            textSprie.text = substring;
+
+            elapsed += dt;
+            mainSprite.rotation = Math.sin(elapsed * 0.1) * 0.1;
+            if (elapsed < 30) {
+                container.position.y = this.game.camera.size.y + (30 - elapsed) * 20 - 200;
+            }
+
+            if (elapsed > time - 30) {
+                container.position.y = this.game.camera.size.y - 200 + (elapsed - time + 30) * 20;
+            }
+
+            if (elapsed > time) {
+                this.happenings.delete(h);
+                container.destroy();
+            }
         };
         this.happenings.add(h);
     }
@@ -104,11 +143,6 @@ export class Splash {
         sprite.scale.set(0.5);
         sprite.anchor.set(0.5);
         this.game.particlesContainer.addChild(sprite);
-        const glow = new Sprite(Assets.get("glow"));
-        glow.tint = 0x000000;
-        glow.alpha = 0.5;
-        glow.anchor.set(0.5);
-        this.game.glowContainer.addChild(glow);
 
         let life = 30;
 
@@ -118,13 +152,30 @@ export class Splash {
             position.add(velocity.result().mult(gtd));
             velocity.add(new Vector(Math.random() - 0.5, Math.random() - 0.5).mult(gtd).mult(2));
             velocity.mult(0.95);
-            glow.position.set(...position.xy());
             sprite.position.set(...position.xy());
             sprite.alpha = ((life / 30) * 0.5 + 0.5) * 0.3;
             if (life < 0) {
                 this.happenings.delete(h);
                 sprite.destroy();
-                glow.destroy();
+                return;
+            }
+        };
+        this.happenings.add(h);
+    }
+
+    incoming(vector: Vector, time: number) {
+        let spawnCooldown = 0;
+        const h = (dt: number) => {
+            time -= dt;
+
+            spawnCooldown += dt * this.game.timeManager.gameRate;
+            while (spawnCooldown > 0) {
+                spawnCooldown--;
+                this.magicSpark(vector.result(),  0xff5555, new Vector(0, 1));
+            }
+
+            if (time < 0) {
+                this.happenings.delete(h);
                 return;
             }
         };
