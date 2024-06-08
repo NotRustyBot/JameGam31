@@ -66,7 +66,6 @@ export class Splash {
         container.position.x = this.game.camera.size.x / 2;
         container.position.y = this.game.camera.size.y + 500;
         let elapsed = 0;
-        time += 100;
         const h = (dt: number) => {
             const ratio = elapsed / (time - 100);
             const substring = text.substring(0, Math.floor(text.length * ratio));

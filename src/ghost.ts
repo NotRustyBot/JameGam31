@@ -16,7 +16,7 @@ export class Ghost extends EnemyBase {
     speed = 5;
 
     cooldown = 100;
-    maxCooldown = 20;
+    maxCooldown = 40;
 
     update(dt: number) {
         const player = this.game.player;
@@ -36,9 +36,11 @@ export class Ghost extends EnemyBase {
 
             let strength = Math.min(Math.max(distance - prefferedDistance, -10), 10) / 10;
 
+            if (this.cooldown > 0) strength = -this.cooldown / this.maxCooldown;
+
             const diff = this.position.diff(player.position);
             if (this.cooldown < 0) {
-                if (player.position.distanceSquared(this.position) < (this.game.player.size.x) ** 2) {
+                if (player.position.distanceSquared(this.position) < this.game.player.size.x ** 2) {
                     player.hit();
                     this.cooldown = this.maxCooldown;
                 }

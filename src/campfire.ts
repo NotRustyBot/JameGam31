@@ -52,10 +52,12 @@ export class Campfire implements ITargetable {
         game.poiContainer.addChild(this.container);
         this.sprite.anchor.set(0.5);
         this.sprite.scale.set(0.5);
-        this.container.filters = [new OutlineFilter({
-            color: 0xffffff,
-            thickness: 10,
-        })];
+        this.container.filters = [
+            new OutlineFilter({
+                color: 0xffffff,
+                thickness: 10,
+            }),
+        ];
         this.spriteBurning.anchor.set(0.5);
         this.spriteBurning.scale.set(0.5);
         this.spriteBurning.play();
@@ -66,6 +68,16 @@ export class Campfire implements ITargetable {
     update(dt: number) {
         if (this.lit) {
             if (this.game.player.position.distanceSquared(this.position) < this.healingArea ** 2) {
+                let safe =true;
+                for (const enemy of this.game.enemies) {
+                    if (enemy.position.distanceSquared(this.position) < 900 ** 2) {
+                        safe = false;
+                    }
+                }
+
+                if (safe) {
+                    this.game.player.health = 5;
+                }
             }
             this.spriteBurning.visible = true;
             this.glow.visible = true;
@@ -97,8 +109,8 @@ export class Campfire implements ITargetable {
 
     onSpell(rune: RuneType): void {
         if (rune.color === RuneColor.red && rune.symbol === RuneSymbol.triangle && !this.lit) {
-           this.lit = true;
-           this.game.player.unregisterTarget(this);
-        } 
+            this.lit = true;
+            this.game.player.unregisterTarget(this);
+        }
     }
 }

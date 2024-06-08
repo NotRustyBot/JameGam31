@@ -145,7 +145,7 @@ export class Game {
             target: this.lightRenderTexture,
         });
 
-        this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(1)}\nHealth: ${this.player.health}`;
+        this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(2)}\nHealth: ${this.player.health}\nMusic: ${this.soundManager.music.toFixed(2)}\nDanger: ${this.soundManager.danger.toFixed(2)} -> ${this.soundManager.combatVolume.toFixed(2)}`;
     }
 
     mouseWorldPosition(): Vector {

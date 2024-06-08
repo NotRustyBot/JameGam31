@@ -14,7 +14,7 @@ export class Player {
     sprite: Sprite;
     glow: Sprite;
     target: ITargetable | undefined;
-    health = 5;
+    health = 4;
 
     potentialTargets = new Set<ITargetable>();
 

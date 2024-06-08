@@ -9,6 +9,7 @@ export class SoundManager {
     danger = 0;
     masterVolume = 0.3;
     music = 1;
+    musicTarget = 0;
     constructor(game: Game) {
         this.game = game;
 
@@ -57,6 +58,8 @@ export class SoundManager {
             combat.howlA.seek(0);
         }
 
+        this.music = this.music * 0.99 + this.musicTarget * 0.01;
+
         exploration.howlA.volume(this.masterVolume * this.music);
         exploration.howlB.volume(this.masterVolume * this.music);
 
@@ -64,9 +67,9 @@ export class SoundManager {
         combat.howlB.volume(this.combatVolume * this.masterVolume * this.music);
 
         if (this.danger > 0.5) {
-            this.combatVolume += 0.01;
+            this.combatVolume += 0.01 * dt;
         } else {
-            this.combatVolume -= 0.01;
+            this.combatVolume -= 0.005 * dt;
         }
 
         this.combatVolume = Math.min(1, Math.max(0, this.combatVolume));
@@ -82,12 +85,12 @@ export class SoundManager {
             return;
         }
         this.voicePlaying = true;
-        this.music = 0.3;
+        this.musicTarget = 0.3;
         const howl = new Howl({ src: [`sounds/voice/${name}.wav`] });
         this.game.splash.monologue(textLines[name as keyof typeof textLines], howl.duration() * 60);
         howl.play();
         howl.on("end", () => {
-            this.music = 1;
+            this.musicTarget = 1;
             this.voicePlaying = false;
             if (this.voiceQueue.length > 0) {
                 this.voiceline(this.voiceQueue.shift()!);
