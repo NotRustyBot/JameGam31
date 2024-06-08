@@ -8,13 +8,12 @@ import { OutlineFilter } from "pixi-filters";
 export class Campfire implements ITargetable {
     container = new Container();
     sprite: Sprite;
+    glow: Sprite;
     spriteBurning: AnimatedSprite;
     position = new Vector();
     range: number = 100;
     game: Game;
-
-    burnTime = 0;
-
+    lit = false;
     healingArea = 200;
 
     constructor(game: Game) {
@@ -41,6 +40,11 @@ export class Campfire implements ITargetable {
             Assets.get("campfireB19") as Texture,
         ]);
         this.sprite = new Sprite(Assets.get("campfire"));
+        this.glow = new Sprite(Assets.get("glow"));
+        this.glow.anchor.set(0.5);
+        this.glow.scale.set(20);
+        this.glow.tint = 0x000000;
+        game.glowContainer.addChild(this.glow);
         this.spriteBurning.visible = false;
         this.game = game;
         game.genericUpdatables.add(this);
@@ -60,39 +64,29 @@ export class Campfire implements ITargetable {
     }
 
     update(dt: number) {
-        if (this.burnTime > 0) {
-            this.burnTime -= dt;
+        if (this.lit) {
             if (this.game.player.position.distanceSquared(this.position) < this.healingArea ** 2) {
             }
             this.spriteBurning.visible = true;
+            this.glow.visible = true;
             this.sprite.visible = false;
         } else {
             this.spriteBurning.visible = false;
+            this.glow.visible = false;
             this.sprite.visible = true;
         }
 
         this.sprite.position.set(...this.position.xy());
         this.spriteBurning.position.set(...this.position.xy());
+        this.glow.position.set(...this.position.xy());
     }
 
     showSymbols(): { runes: RuneType[]; count: number } {
-        if (this.burnTime <= 0) {
-            return {
-                runes: [
-                    {
-                        color: RuneColor.red,
-                        symbol: RuneSymbol.triangle,
-                    },
-                ],
-                count: 1,
-            };
-        }
-
         return {
             runes: [
                 {
-                    color: RuneColor.blue,
-                    symbol: RuneSymbol.circle,
+                    color: RuneColor.red,
+                    symbol: RuneSymbol.triangle,
                 },
             ],
             count: 1,
@@ -102,10 +96,9 @@ export class Campfire implements ITargetable {
     readonly addBurnTime = 1000;
 
     onSpell(rune: RuneType): void {
-        if (rune.color === RuneColor.red && rune.symbol === RuneSymbol.triangle && this.burnTime <= 0) {
-            this.burnTime = this.addBurnTime;
-        } else if (rune.color === RuneColor.blue && rune.symbol === RuneSymbol.circle && this.burnTime > 0) {
-            this.burnTime = 0;
-        }
+        if (rune.color === RuneColor.red && rune.symbol === RuneSymbol.triangle && !this.lit) {
+           this.lit = true;
+           this.game.player.unregisterTarget(this);
+        } 
     }
 }

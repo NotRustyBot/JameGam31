@@ -7,12 +7,16 @@
     "circle": "circle.png",
     "star": "star.png",
     "healthBg": "healthBg.png",
+    "glow": "glow.png",
     "projectile": "projectile.png",
     "totem": "totem.png",
     "campfire": "campfire.png",
     "campfireBurning": "campfireBurning.png",
     "path": "path.png",
     "pathTexture": "pathTexture.png",
+
+    "card1": "card1.png",
+    "cardback": "cardback.png",
 
     "wizard": "wizard.png",
     "ghost": "ghost.png",
@@ -47,5 +51,11 @@
     "candleB4": "candle/0041.png",
     "candle": "candle.png",
 
-    "redDust": "redDust.png"
+    "redDust": "redDust.png",
+
+    "tutorial_mouse": "tutorial/mouse.png",
+    "tutorial_redTriangle": "tutorial/redTriangle.png",
+    "tutorial_combat": "tutorial/combat.png",
+    "tutorial_totems": "tutorial/totems.png",
+    "tutorial_missile": "tutorial/missile.png"
 }

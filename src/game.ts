@@ -1,10 +1,9 @@
-import { Application, Assets, Container, Sprite, Text } from "pixi.js";
+import { Application, Assets, Container, Graphics, Matrix, RenderTexture, Sprite, Text } from "pixi.js";
 import { Player } from "./player";
 import { Camera } from "./camera";
 import { GestureRecodniser, PlayState } from "./gestureRecodniser";
 import { Mouse } from "./mouse";
 import { TargetUI } from "./targetUi";
-import { Wizard } from "./wizard";
 import { Vector } from "./types";
 import { HostileSpell } from "./hostileSpell";
 import { SoundManager } from "./musicManager";
@@ -12,6 +11,9 @@ import { Wall } from "./wall";
 import { PathManager } from "./pathManager";
 import { RedDust } from "./redDust";
 import { EnemyBase } from "./enemyBase";
+import { TimeManager } from "./timeManager";
+import { Splash } from "./splash";
+import { ExMahcina as ExMachina } from "./exMachina";
 
 export class Game {
     keys: Record<string, boolean> = {};
@@ -23,8 +25,11 @@ export class Game {
     targetUIContainer = new Container();
     pathContainer = new Container();
     enemyContainer = new Container();
+    particlesContainer = new Container();
     spellsContainer = new Container();
     poiContainer = new Container();
+    overlayContainer = new Container();
+    glowContainer = new Container();
     gestureRecodiniser!: GestureRecodniser;
     soundManager!: SoundManager;
     pathManager!: PathManager;
@@ -32,33 +37,70 @@ export class Game {
     app!: Application;
     mouse!: Mouse;
     redDust!: RedDust;
+    timeManager!: TimeManager;
 
+    shadowSprite!: Sprite;
+
+    tagged = new Map<string, any>();
     walls = new Set<Wall>();
     enemies = new Set<EnemyBase>();
     spells = new Set<HostileSpell>();
     genericUpdatables = new Set<{ update: (dt: number) => void }>();
+    splash!: Splash;
+    exMachina!: ExMachina;
+    lightRenderTexture: any;
+    lightBaseDarkness!: Graphics;
+    shadowGraphics!: Graphics;
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
         app.ticker.add((time) => this.loop(time.deltaTime));
+        this.app = app;
+        this.camera = new Camera(this);
+        this.lightBaseDarkness = new Graphics();
+        this.lightBaseDarkness.rect(0, 0, this.camera.size.x, this.camera.size.y);
+        this.lightBaseDarkness.fill({ color: 0xffffff, alpha: 1 });
+        this.glowContainer.addChild(this.lightBaseDarkness);
         this.keys = keys;
         this.mouse = mouse;
-        this.camera = new Camera(this);
         this.targetUI = new TargetUI(this);
         this.player = new Player(this);
         app.stage.addChild(this.worldContainer);
         app.stage.addChild(this.gestureContainer);
+        this.lightRenderTexture = RenderTexture.create({ width: app.canvas.width, height: app.canvas.height });
+        this.shadowSprite = new Sprite(this.lightRenderTexture);
+        
+        this.shadowGraphics = new Graphics();
+        this.shadowGraphics.rect(0, 0, this.camera.size.x, this.camera.size.y);
+        this.shadowGraphics.fill({ color: 0x000000, alpha: 1 });
+        this.shadowGraphics.mask = this.shadowSprite;
+        app.stage.addChild(this.overlayContainer);
         this.worldContainer.addChild(this.pathContainer);
         this.worldContainer.addChild(this.poiContainer);
         this.worldContainer.addChild(this.playerContainer);
         this.worldContainer.addChild(this.enemyContainer);
+        this.worldContainer.addChild(this.particlesContainer);
         this.worldContainer.addChild(this.spellsContainer);
+        this.worldContainer.addChild(this.shadowGraphics);
         this.worldContainer.addChild(this.targetUIContainer);
-        this.app = app;
         this.gestureRecodiniser = new GestureRecodniser(this);
         this.soundManager = new SoundManager(this);
         this.pathManager = new PathManager(this);
+        this.timeManager = new TimeManager();
+        this.splash = new Splash(this);
+        this.exMachina = new ExMachina(this);
+
+        this.shadowGraphics.alpha = 0
+
 
         app.stage.addChild(this.debugText);
 
+    }
+
+    registerTagged(tagable: any, tag: string) {
+        this.tagged.set(tag, tagable);
+    }
+
+    unregisterTagged(tagable: any, tag: string) {
+        this.tagged.delete(tag);
     }
 
     debugText = new Text("", {
@@ -67,31 +109,43 @@ export class Game {
         fontFamily: "Arial",
     });
 
-
     loop(dt: number) {
+        this.timeManager.update(dt);
         if (this.gestureRecodiniser.playState == PlayState.playing) {
-            dt *= 0.1;
+            this.timeManager.requestRate(0.1);
         }
-
-        this.player.update(dt);
-        this.camera.update(dt);
-        this.targetUI.update(dt);
+        const gdt = this.timeManager.gameRate * dt;
+        this.player.update(gdt);
+        this.camera.update(gdt);
+        this.targetUI.update(gdt);
         for (const enemy of this.enemies) {
-            enemy.update(dt);
+            enemy.update(gdt);
         }
 
         for (const spell of this.spells) {
-            spell.update(dt);
+            spell.update(gdt);
         }
 
         for (const genericUpdatable of this.genericUpdatables) {
-            genericUpdatable.update(dt);
+            genericUpdatable.update(gdt);
         }
 
-        this.gestureRecodiniser.update(dt);
-        this.soundManager.update(dt);
+        this.gestureRecodiniser.update(gdt);
+        this.exMachina.update(dt);
+        this.splash.update(dt);
+        this.soundManager.update(gdt);
 
-        this.debugText.text = `FPS: ${this.app.ticker.FPS.toFixed(1)}\nHealth: ${this.player.health}`
+        const transform = new Matrix();
+        transform.translate(this.worldContainer.x, this.worldContainer.y);
+        this.lightBaseDarkness.position.set(-this.worldContainer.x, -this.worldContainer.y);
+        this.shadowGraphics.position.set(-this.worldContainer.x, -this.worldContainer.y);
+        this.app.renderer.render({
+            container: this.glowContainer,
+            transform: transform,
+            target: this.lightRenderTexture,
+        });
+
+        this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(1)}\nHealth: ${this.player.health}`;
     }
 
     mouseWorldPosition(): Vector {

@@ -7,7 +7,7 @@ import { loadLevel } from "./levelLoader";
 (async () => {
     const app = new Application();
 
-    await app.init({ background: "#223022", resizeTo: window });
+    await app.init({ background: "#334433", resizeTo: window });
 
     Assets.addBundle("assets", bundle);
 

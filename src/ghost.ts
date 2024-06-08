@@ -31,7 +31,7 @@ export class Ghost extends EnemyBase {
         if (distance > maxDistance) {
             this.cooldown = this.maxCooldown;
         } else {
-            this.game.soundManager.danger++;
+            this.game.soundManager.danger += 0.025;
             this.cooldown -= dt;
 
             let strength = Math.min(Math.max(distance - prefferedDistance, -10), 10) / 10;

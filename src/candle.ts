@@ -8,6 +8,7 @@ import { OutlineFilter } from "pixi-filters";
 export class Candle implements ITargetable {
     container = new Container();
     sprite: Sprite;
+    glow: Sprite;
     spriteBurning: AnimatedSprite;
     position = new Vector();
     range: number = 30;
@@ -41,18 +42,27 @@ export class Candle implements ITargetable {
         this.spriteBurning.animationSpeed = 0.2;
         this.container.scale.set(0.1);
         game.player.registerTarget(this);
+
+        this.glow = new Sprite(Assets.get("glow"));
+        this.glow.anchor.set(0.5);
+        this.glow.scale.set(5);
+        this.glow.tint = 0x000000;
+        game.glowContainer.addChild(this.glow);
     }
 
     update(dt: number) {
         if (this.lit) {
             this.spriteBurning.visible = true;
             this.sprite.visible = false;
+            this.glow.visible = true;
         } else {
             this.spriteBurning.visible = false;
             this.sprite.visible = true;
+            this.glow.visible = false;
         }
 
         this.container.position.set(...this.position.xy());
+        this.glow.position.set(...this.position.xy());
     }
 
     showSymbols(): { runes: RuneType[]; count: number } {
@@ -80,7 +90,7 @@ export class Candle implements ITargetable {
         if (rune.color === RuneColor.red && rune.symbol === RuneSymbol.triangle && !this.lit) {
             this.lit = true;
             this.game.redDust.level++;
-            if(this == this.game.player.target) this.game.player.target = undefined;
+            if (this == this.game.player.target) this.game.player.target = undefined;
             this.game.player.unregisterTarget(this);
         }
     }

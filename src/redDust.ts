@@ -32,8 +32,6 @@ export class RedDust implements ITargetable {
     }
 
     update(dt: number) {
-        console.log("redDust", this.level);
-
         if (this.level == 5 && !this.ready) {
             this.ready = true;
             this.game.player.registerTarget(this);
@@ -66,11 +64,14 @@ export class RedDust implements ITargetable {
         if (rune.color === RuneColor.red && rune.symbol === RuneSymbol.star && this.ready) {
             if (this == this.game.player.target) this.game.player.target = undefined;
             this.game.player.unregisterTarget(this);
+            this.game.exMachina.ghostsSummoned = true;
+
             for (let i = 0; i < 5; i++) {
                 const enemy = new Ghost(this.game);
                 enemy.position.set(this.position.x, this.position.y).add(Vector.fromAngle((i * Math.PI * 2) / 5).mult(250 + 100 * i));
                 enemy.maxHealth = 1;
                 enemy.randomHealth("greenCircles");
+                this.game.exMachina.summonedGhosts.add(enemy);
             }
         }
     }

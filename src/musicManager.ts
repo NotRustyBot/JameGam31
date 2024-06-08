@@ -11,7 +11,7 @@ export class SoundManager {
 
         this.musicTracks["exploration"] = {
             name: "exploration",
-            swap: 60 + 15,
+            swap: 60 + 14.6,
             howlA: new Howl({
                 src: ["sounds/exploration.wav"],
             }),

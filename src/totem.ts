@@ -1,6 +1,6 @@
 import { Assets, Sprite } from "pixi.js";
 import { Game } from "./game";
-import { RuneType, areRuneTypesEqual } from "./gestureRecodniser";
+import { RuneType, areRuneTypesEqual, runeColorDictionary } from "./gestureRecodniser";
 import { ITargetable } from "./targetable";
 import { Vector } from "./types";
 import { MagicMissile } from "./magicMissile";
@@ -39,6 +39,8 @@ export class Totem implements ITargetable {
 
     areaRange = 400;
 
+    particleCooldown = 0;
+
     update(dt: number) {
         if (this.loadedSymbol != undefined) {
             for (const enemy of this.game.enemies) {
@@ -46,7 +48,6 @@ export class Totem implements ITargetable {
                     const lastHealth = enemy.health[enemy.health.length - 1];
                     if (areRuneTypesEqual(lastHealth, this.loadedSymbol)) {
                         enemy.onSpell(this.loadedSymbol);
-                        console.log("totem", this.loadedSymbol);
                     }
                 }
             }
@@ -57,6 +58,16 @@ export class Totem implements ITargetable {
                         areRuneTypesEqual(spell.missileRune, this.loadedSymbol) && spell.remove();
                     }
                 }
+            }
+        }
+
+        if (this.loadedSymbol != undefined) {
+            this.particleCooldown += dt;
+            while (this.particleCooldown > 0) {
+                const offset = Vector.fromAngle(Math.random() * Math.PI * 2).mult(this.areaRange);
+
+                this.game.splash.magicSpark(this.position.result().add(offset), runeColorDictionary[this.loadedSymbol.color], new Vector(0, -5), this.loadedSymbol.symbol);
+                this.particleCooldown--;
             }
         }
 

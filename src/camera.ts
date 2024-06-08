@@ -41,7 +41,9 @@ export class Camera {
 
     moveTo(targetPosition: Vector, dt: number) {
         const usePosition = targetPosition.result().add(this.size.mult(-0.5));
-        const mouseDiff = this.game.mouse.position.result().sub(this.size.mult(0.5)).mult(this.mouseSway);
+        const mouseDiff = this.game.mouse.position.result().sub(this.size.mult(0.5));
+        mouseDiff.x *= this.mouseSway;
+        mouseDiff.y *= this.mouseSway * this.size.x / this.size.y;
         usePosition.add(mouseDiff);
         const diff = usePosition.diff(this.position);
         this.position.add(diff.mult(0.1 * dt));

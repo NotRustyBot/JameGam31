@@ -19,6 +19,8 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
     ["totem"]: (game, data) => {
         const totem = new Totem(game);
         totem.position.set(data.position.x, data.position.y);
+        if (data.template.tag !== "") game.registerTagged(totem, data.template.tag);
+
     },
     ["wizard"]: (game, data) => {
         const enemy = new Wizard(game);
@@ -27,6 +29,8 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
         enemy.type = data.template.type ?? 0;
         enemy.randomHealth(family);
         enemy.position.set(data.position.x, data.position.y);
+        if (data.template.tag !== "") game.registerTagged(enemy, data.template.tag);
+
     },
     ["ghost"]: (game, data) => {
         const enemy = new Ghost(game);
@@ -34,6 +38,8 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
         let family = data.template.family ?? "default";
         enemy.randomHealth(family);
         enemy.position.set(data.position.x, data.position.y);
+        if (data.template.tag !== "") game.registerTagged(enemy, data.template.tag);
+
     },
     ["slime"]: (game, data) => {
         const enemy = new Slime(game);
@@ -41,10 +47,12 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
         let family = data.template.family ?? "default";
         enemy.randomHealth(family);
         enemy.position.set(data.position.x, data.position.y);
+        if (data.template.tag !== "") game.registerTagged(enemy, data.template.tag);
     },
     ["campfire"]: (game, data) => {
         const totem = new Campfire(game);
         totem.position.set(data.position.x, data.position.y);
+        if (data.template.tag !== "") game.registerTagged(totem, data.template.tag);
     },
     ["wall"]: (game, data) => {
         const totem = new Wall(game);

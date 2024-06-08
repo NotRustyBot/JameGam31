@@ -44,6 +44,7 @@ export class Wizard extends EnemyBase {
                 let spell;
                 if (this.type == 0) {
                     spell = new HostileSpell(this.game);
+                    this.cooldown = this.maxCooldown * 2;
                 } else {
                     spell = new MagicMissile(this.game);
                 }

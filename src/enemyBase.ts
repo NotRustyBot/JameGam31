@@ -3,7 +3,6 @@ import { Game } from "./game";
 import { Vector } from "./types";
 import { RuneColor, RuneSymbol, RuneType, areRuneTypesEqual, randomRuneType } from "./gestureRecodniser";
 import { ITargetable } from "./targetable";
-import { HostileSpell } from "./hostileSpell";
 
 export class EnemyBase implements ITargetable {
     position: Vector;
@@ -28,6 +27,10 @@ export class EnemyBase implements ITargetable {
         } else if (family == "greenCircles") {
             for (let i = 0; i < this.maxHealth; i++) {
                 this.health.push({color: RuneColor.green, symbol: RuneSymbol.circle});
+            }
+        } else if (family == "arcane") {
+            for (let i = 0; i < this.maxHealth; i++) {
+                this.health.push(randomRuneType([RuneSymbol.circle, RuneSymbol.triangle], [RuneColor.blue]));
             }
         }
     }

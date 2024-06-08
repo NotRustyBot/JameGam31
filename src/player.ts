@@ -12,6 +12,7 @@ export class Player {
     game: Game;
     speed: number = 6;
     sprite: Sprite;
+    glow: Sprite;
     target: ITargetable | undefined;
     health = 5;
 
@@ -27,6 +28,12 @@ export class Player {
         this.sprite.anchor.set(0.5);
         game.playerContainer.addChild(this.sprite);
         game.camera.follow(this);
+        this.glow = new Sprite(Assets.get("glow"));
+        this.glow.anchor.set(0.5);
+        this.glow.scale.set(20);
+        this.glow.tint = 0x000000;
+        this.glow.alpha = 0.5;
+        game.glowContainer.addChild(this.glow);
     }
 
     registerTarget(target: ITargetable) {
@@ -104,5 +111,8 @@ export class Player {
 
         this.sprite.position.x = this.position.x;
         this.sprite.position.y = this.position.y;
+
+        this.glow.position.x = this.position.x;
+        this.glow.position.y = this.position.y;
     }
 }
