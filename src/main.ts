@@ -1,25 +1,15 @@
 import { Application, Assets, Container, Sprite } from "pixi.js";
 import "./style.css";
-import { threshold } from "./shader/someFilter";
-import { Howl } from "howler";
 import { Game } from "./game";
 import { Vector } from "./types";
+import bundle from "./bundle.json";
+import { loadLevel } from "./levelLoader";
 (async () => {
     const app = new Application();
 
-    await app.init({ background: "#222222", resizeTo: window });
+    await app.init({ background: "#223022", resizeTo: window });
 
-    Assets.addBundle("assets", {
-        jglogo: "jglogo.png",
-        marker: "marker.png",
-        sraf: "sraf.png",
-        triangle: "triangle.png",
-        square: "square.png",
-        circle: "circle.png",
-        healthBg: "healthBg.png",
-        projectile: "projectile.png",
-        totem: "totem.png",
-    });
+    Assets.addBundle("assets", bundle);
 
     await Assets.loadBundle("assets");
 
@@ -60,4 +50,6 @@ import { Vector } from "./types";
     });
 
     game.init(app, keys, mouse);
+    loadLevel(game);
+    game.pathManager.render();
 })();

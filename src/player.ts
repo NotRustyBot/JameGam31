@@ -4,9 +4,11 @@ import { Vector } from "./types";
 import { Enemy } from "./enemy";
 import { ITargetable } from "./targetable";
 import { PlayState, RuneType } from "./gestureRecodniser";
+import { collision } from "./collision";
 
 export class Player {
     position: Vector = new Vector();
+    size = new Vector(32, 32);
     game: Game;
     speed: number = 6;
     sprite: Sprite;
@@ -64,14 +66,20 @@ export class Player {
         if (controlVector.lengthSquared() > 0) {
             controlVector.normalize(this.speed);
             this.position.add(controlVector.mult(dt));
+
+            for (const wall of this.game.walls) {
+                const res = collision(wall, this);
+                if (res) {
+                   this.position.add(res);
+                }
+            }
         }
 
-        if (this.game.gestureRecodiniser.playState == PlayState.idle) {
+        if (this.game.gestureRecodiniser.playState != PlayState.playing) {
             for (const target of this.potentialTargets) {
                 if (this.position.distanceSquared(target.position) < this.targetRange ** 2) {
                     if (this.game.mouseWorldPosition().distanceSquared(target.position) < target.range ** 2) {
                         this.target = target;
-                        this.game.targetUI.setSymbols(target.showSymbols());
                         break;
                     }
                 }

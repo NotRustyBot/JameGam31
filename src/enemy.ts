@@ -31,10 +31,16 @@ export class Enemy implements ITargetable {
         game.enemies.add(this);
     }
 
-    randomHealth() {
+    randomHealth(family?: string) {
         this.health = [];
-        for (let i = 0; i < this.maxHealth; i++) {
-            this.health.push(randomRuneType([RuneSymbol.circle, RuneSymbol.square, RuneSymbol.triangle]));
+        if (family == "default" || !family) {
+            for (let i = 0; i < this.maxHealth; i++) {
+                this.health.push(randomRuneType([RuneSymbol.circle, RuneSymbol.square, RuneSymbol.triangle]));
+            }
+        } else if (family == "greenCircles") {
+            for (let i = 0; i < this.maxHealth; i++) {
+                this.health.push({color: RuneColor.green, symbol: RuneSymbol.circle});
+            }
         }
     }
 
@@ -95,7 +101,7 @@ export class Enemy implements ITargetable {
             this.position.add(diff.normalize(-strength * this.speed * dt));
 
             for (const enemy of this.game.enemies) {
-                if(enemy == this) continue;
+                if (enemy == this) continue;
 
                 const diff = this.position.diff(enemy.position);
                 if (diff.length() < 100) {

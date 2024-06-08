@@ -7,8 +7,10 @@ import { TargetUI } from "./targetUi";
 import { Enemy } from "./enemy";
 import { Vector } from "./types";
 import { HostileSpell } from "./hostileSpell";
-import { Totem } from "./totem";
 import { SoundManager } from "./musicManager";
+import { Wall } from "./wall";
+import { PathManager } from "./pathManager";
+import { RedDust } from "./redDust";
 
 export class Game {
     keys: Record<string, boolean> = {};
@@ -18,15 +20,19 @@ export class Game {
     playerContainer = new Container();
     gestureContainer = new Container();
     targetUIContainer = new Container();
+    pathContainer = new Container();
     enemyContainer = new Container();
     spellsContainer = new Container();
     poiContainer = new Container();
     gestureRecodiniser!: GestureRecodniser;
     soundManager!: SoundManager;
+    pathManager!: PathManager;
     targetUI!: TargetUI;
     app!: Application;
     mouse!: Mouse;
+    redDust!: RedDust;
 
+    walls = new Set<Wall>();
     enemies = new Set<Enemy>();
     spells = new Set<HostileSpell>();
     genericUpdatables = new Set<{ update: (dt: number) => void }>();
@@ -39,27 +45,16 @@ export class Game {
         this.player = new Player(this);
         app.stage.addChild(this.worldContainer);
         app.stage.addChild(this.gestureContainer);
-        this.worldContainer.addChild(new Sprite(Assets.get("jglogo")));
-        this.worldContainer.addChild(this.playerContainer);
+        this.worldContainer.addChild(this.pathContainer);
         this.worldContainer.addChild(this.poiContainer);
+        this.worldContainer.addChild(this.playerContainer);
         this.worldContainer.addChild(this.enemyContainer);
         this.worldContainer.addChild(this.spellsContainer);
         this.worldContainer.addChild(this.targetUIContainer);
         this.app = app;
         this.gestureRecodiniser = new GestureRecodniser(this);
-        for (let i = 0; i < 6; i++) {
-            const enemy = new Enemy(this);
-            enemy.maxHealth = i + 1;
-            enemy.randomHealth();
-            const vector = Vector.fromAngle((i / 6) * Math.PI * 2);
-            enemy.position = vector.normalize(650).add({x: 1600, y: 0});
-        }
-
-        const totem = new Totem(this);
-
-        totem.position.x = 1600;
-
         this.soundManager = new SoundManager(this);
+        this.pathManager = new PathManager(this);
     }
 
     loop(dt: number) {

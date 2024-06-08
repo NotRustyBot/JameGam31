@@ -10,12 +10,11 @@ export class Camera {
     game: Game;
     position: Vector;
     targets: ITrackable[] = [];
+    mouseSway = 0.25;
 
-    
-    public get size() : Vector {
-        return new Vector( this.game.app.canvas.width, this.game.app.canvas.height);
+    public get size(): Vector {
+        return new Vector(this.game.app.canvas.width, this.game.app.canvas.height);
     }
-    
 
     constructor(game: Game) {
         this.game = game;
@@ -36,14 +35,16 @@ export class Camera {
     update(dt: number) {
         if (this.targets.length > 0) {
             const last = this.targets[this.targets.length - 1];
-            this.moveTo(last.position);
+            this.moveTo(last.position, dt);
         }
     }
 
-    moveTo(targetPosition: Vector) {
+    moveTo(targetPosition: Vector, dt: number) {
         const usePosition = targetPosition.result().add(this.size.mult(-0.5));
+        const mouseDiff = this.game.mouse.position.result().sub(this.size.mult(0.5)).mult(this.mouseSway);
+        usePosition.add(mouseDiff);
         const diff = usePosition.diff(this.position);
-        this.position.add(diff.mult(0.1));
+        this.position.add(diff.mult(0.1 * dt));
         this.game.worldContainer.position.set(-this.position.x, -this.position.y);
     }
 }

@@ -3,9 +3,9 @@ import { Game } from "./game";
 import { Vector, Vectorlike } from "./types";
 
 export enum RuneColor {
-    red,
-    green,
-    blue,
+    red = "red",
+    green = "green",
+    blue = "blue",
 }
 
 export enum RuneSymbol {
@@ -341,11 +341,16 @@ export function areRuneTypesEqual(a: RuneType, b: RuneType) {
     return false;
 }
 
-export function randomRuneType(useTypes?: Array<RuneSymbol>): RuneType {
+export function randomRuneType(useTypes?: Array<RuneSymbol>, useColors?: Array<RuneColor>): RuneType {
     if (useTypes === undefined) {
         useTypes = [...Object.values(RuneSymbol)];
     }
 
-    const index = Math.floor(Math.random() * useTypes.length);
-    return { color: Math.floor(Math.random() * 3), symbol: useTypes[index] };
+    if (useColors === undefined) {
+        useColors = [...Object.values(RuneColor)];
+    }
+
+    const indexShape = Math.floor(Math.random() * useTypes.length);
+    const indexColor = Math.floor(Math.random() * useColors.length);
+    return { color: useColors[indexColor], symbol: useTypes[indexShape] };
 }
