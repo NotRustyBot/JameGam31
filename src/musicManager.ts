@@ -5,6 +5,7 @@ export class SoundManager {
     musicTracks: Record<string, MusicTrack> = {};
     game: Game;
     danger = 0;
+    masterVolume = 0.3;
     constructor(game: Game) {
         this.game = game;
 
@@ -53,10 +54,13 @@ export class SoundManager {
             combat.howlA.seek(0);
         }
 
-        this.musicTracks["combat"].howlA.volume(this.combatVolume);
-        this.musicTracks["combat"].howlB.volume(this.combatVolume);
+        exploration.howlA.volume(this.masterVolume);
+        exploration.howlB.volume(this.masterVolume);
 
-        if(this.danger > 0.5){
+        combat.howlA.volume(this.combatVolume * this.masterVolume);
+        combat.howlB.volume(this.combatVolume * this.masterVolume);
+
+        if (this.danger > 0.5) {
             this.combatVolume += 0.01;
         } else {
             this.combatVolume -= 0.01;
@@ -64,7 +68,7 @@ export class SoundManager {
 
         this.combatVolume = Math.min(1, Math.max(0, this.combatVolume));
 
-        this.danger /= 1.1;;
+        this.danger /= 1.1;
     }
 }
 
