@@ -4,7 +4,8 @@ import { ITargetable } from "./targetable";
 import { Vector } from "./types";
 import { RuneColor, RuneSymbol, RuneType } from "./gestureRecodniser";
 import { OutlineFilter } from "pixi-filters";
-import { Enemy } from "./enemy";
+import { Wizard } from "./wizard";
+import { Ghost } from "./ghost";
 
 export class RedDust implements ITargetable {
     sprite: Sprite;
@@ -32,7 +33,7 @@ export class RedDust implements ITargetable {
 
     update(dt: number) {
         console.log("redDust", this.level);
-        
+
         if (this.level == 5 && !this.ready) {
             this.ready = true;
             this.game.player.registerTarget(this);
@@ -66,10 +67,11 @@ export class RedDust implements ITargetable {
             if (this == this.game.player.target) this.game.player.target = undefined;
             this.game.player.unregisterTarget(this);
             for (let i = 0; i < 5; i++) {
-                const enemy =new Enemy(this.game);
-                enemy.position.set(this.position.x, this.position.y).add(Vector.fromAngle(i * Math.PI * 2 / 5).mult(250));
+                const enemy = new Ghost(this.game);
+                enemy.position.set(this.position.x, this.position.y).add(Vector.fromAngle((i * Math.PI * 2) / 5).mult(250 + 100 * i));
+                enemy.maxHealth = 1;
                 enemy.randomHealth("greenCircles");
-        }
+            }
         }
     }
 }

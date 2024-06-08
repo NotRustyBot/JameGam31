@@ -10,9 +10,21 @@ export const templates: ObjectTemplateData[] = [
         image: "totem",
     },
     {
-        name: "enemy",
-        image: "triangle",
-        health: 5,
+        name: "wizard",
+        image: "wizard",
+        health: 4,
+        family: "default",
+    },
+    {
+        name: "ghost",
+        image: "ghost",
+        health: 2,
+        family: "default",
+    },
+    {
+        name: "slime",
+        image: "slime",
+        health: 6,
         family: "default",
     },
     {

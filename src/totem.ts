@@ -3,6 +3,7 @@ import { Game } from "./game";
 import { RuneType, areRuneTypesEqual } from "./gestureRecodniser";
 import { ITargetable } from "./targetable";
 import { Vector } from "./types";
+import { MagicMissile } from "./magicMissile";
 
 export class Totem implements ITargetable {
     position = new Vector();
@@ -36,7 +37,7 @@ export class Totem implements ITargetable {
         };
     }
 
-    areaRange = 200;
+    areaRange = 400;
 
     update(dt: number) {
         if (this.loadedSymbol != undefined) {
@@ -46,6 +47,14 @@ export class Totem implements ITargetable {
                     if (areRuneTypesEqual(lastHealth, this.loadedSymbol)) {
                         enemy.onSpell(this.loadedSymbol);
                         console.log("totem", this.loadedSymbol);
+                    }
+                }
+            }
+
+            for (const spell of this.game.spells) {
+                if (spell instanceof MagicMissile) {
+                    if (spell.position.distanceSquared(this.position) < this.areaRange ** 2) {
+                        areRuneTypesEqual(spell.missileRune, this.loadedSymbol) && spell.remove();
                     }
                 }
             }

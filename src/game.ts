@@ -1,16 +1,17 @@
-import { Application, Assets, Container, Sprite } from "pixi.js";
+import { Application, Assets, Container, Sprite, Text } from "pixi.js";
 import { Player } from "./player";
 import { Camera } from "./camera";
 import { GestureRecodniser, PlayState } from "./gestureRecodniser";
 import { Mouse } from "./mouse";
 import { TargetUI } from "./targetUi";
-import { Enemy } from "./enemy";
+import { Wizard } from "./wizard";
 import { Vector } from "./types";
 import { HostileSpell } from "./hostileSpell";
 import { SoundManager } from "./musicManager";
 import { Wall } from "./wall";
 import { PathManager } from "./pathManager";
 import { RedDust } from "./redDust";
+import { EnemyBase } from "./enemyBase";
 
 export class Game {
     keys: Record<string, boolean> = {};
@@ -33,7 +34,7 @@ export class Game {
     redDust!: RedDust;
 
     walls = new Set<Wall>();
-    enemies = new Set<Enemy>();
+    enemies = new Set<EnemyBase>();
     spells = new Set<HostileSpell>();
     genericUpdatables = new Set<{ update: (dt: number) => void }>();
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
@@ -55,7 +56,17 @@ export class Game {
         this.gestureRecodiniser = new GestureRecodniser(this);
         this.soundManager = new SoundManager(this);
         this.pathManager = new PathManager(this);
+
+        app.stage.addChild(this.debugText);
+
     }
+
+    debugText = new Text("", {
+        fill: 0xffffff,
+        fontSize: 20,
+        fontFamily: "Arial",
+    });
+
 
     loop(dt: number) {
         if (this.gestureRecodiniser.playState == PlayState.playing) {
@@ -79,6 +90,8 @@ export class Game {
 
         this.gestureRecodiniser.update(dt);
         this.soundManager.update(dt);
+
+        this.debugText.text = `FPS: ${this.app.ticker.FPS.toFixed(1)}\nHealth: ${this.player.health}`
     }
 
     mouseWorldPosition(): Vector {

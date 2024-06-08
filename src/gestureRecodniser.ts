@@ -334,7 +334,8 @@ export class GestureRecodniser {
     }
 }
 
-export function areRuneTypesEqual(a: RuneType, b: RuneType) {
+export function areRuneTypesEqual(a: RuneType | undefined, b: RuneType) {
+    if (!a) return false;
     if (a.color == b.color && a.symbol == b.symbol) {
         return true;
     }

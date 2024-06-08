@@ -1,12 +1,14 @@
 import { Campfire } from "./campfire";
 import { Candle } from "./candle";
 import data from "./data.json";
-import { Enemy } from "./enemy";
+import { Wizard } from "./wizard";
 import { Game } from "./game";
 import { RedDust } from "./redDust";
 import { Totem } from "./totem";
 import { Vector } from "./types";
 import { Wall } from "./wall";
+import { Ghost } from "./ghost";
+import { Slime } from "./slime";
 
 type ObjectTemplateData = {
     position: { x: number; y: number };
@@ -18,9 +20,24 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
         const totem = new Totem(game);
         totem.position.set(data.position.x, data.position.y);
     },
-    ["enemy"]: (game, data) => {
-        const enemy = new Enemy(game);
-        enemy.maxHealth = data.template.maxHealth ?? 5;
+    ["wizard"]: (game, data) => {
+        const enemy = new Wizard(game);
+        enemy.maxHealth = data.template.health ?? 4;
+        let family = data.template.family ?? "default";
+        enemy.type = data.template.type ?? 0;
+        enemy.randomHealth(family);
+        enemy.position.set(data.position.x, data.position.y);
+    },
+    ["ghost"]: (game, data) => {
+        const enemy = new Ghost(game);
+        enemy.maxHealth = data.template.health ?? 2;
+        let family = data.template.family ?? "default";
+        enemy.randomHealth(family);
+        enemy.position.set(data.position.x, data.position.y);
+    },
+    ["slime"]: (game, data) => {
+        const enemy = new Slime(game);
+        enemy.maxHealth = data.template.health ?? 6;
         let family = data.template.family ?? "default";
         enemy.randomHealth(family);
         enemy.position.set(data.position.x, data.position.y);

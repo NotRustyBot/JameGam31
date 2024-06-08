@@ -15,19 +15,24 @@ export class HostileSpell {
         game.spells.add(this);
     }
 
-    remove(){
+    remove() {
         this.sprite.destroy();
         this.game.spells.delete(this);
-    }    
+    }
 
     update(dt: number) {
-        if (this.game.player.position.distanceSquared(this.position) < 10 ** 2) {
+        if (this.game.player.position.distanceSquared(this.position) < this.game.player.size.x ** 2) {
             this.game.player.hit();
             this.remove();
             return;
         }
 
         this.life -= dt;
+
+        if (this.life <= 0) {
+            this.remove();
+            return;
+        }
 
         this.sprite.alpha = (this.life / 100) * 0.5 + 0.5;
         this.position.add(this.velocity.result().mult(dt));

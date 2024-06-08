@@ -1,7 +1,7 @@
 import { Assets, Sprite } from "pixi.js";
 import { Game } from "./game";
 import { Vector } from "./types";
-import { Enemy } from "./enemy";
+import { Wizard } from "./wizard";
 import { ITargetable } from "./targetable";
 import { PlayState, RuneType } from "./gestureRecodniser";
 import { collision } from "./collision";
@@ -13,6 +13,7 @@ export class Player {
     speed: number = 6;
     sprite: Sprite;
     target: ITargetable | undefined;
+    health = 5;
 
     potentialTargets = new Set<ITargetable>();
 
@@ -34,6 +35,9 @@ export class Player {
 
     unregisterTarget(target: ITargetable) {
         this.potentialTargets.delete(target);
+        if(target === this.target) {
+            this.target = undefined;
+        }
     }
 
     preparedRune: RuneType | undefined = undefined;
@@ -42,7 +46,7 @@ export class Player {
     }
 
     hit() {
-
+        this.health--;
     }
 
     update(dt: number) {

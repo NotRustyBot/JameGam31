@@ -72,7 +72,8 @@ export function loadFile(file: string) {
 
     for (const obj of data) {
         const sprite = new Sprite(Assets.get(obj.template.image));
-        sprite.scale.set( obj.template.scale ?? 1 );
+        sprite.scale.set(obj.template.scale ?? 1);
+        sprite.anchor.set(0.5);
         sprite.position.set(obj.position.x, obj.position.y);
         worldContainer.addChild(sprite);
         objects.push({
@@ -206,7 +207,7 @@ export function editorRun() {
                 } else {
                     if (selectedTemplate) {
                         const sprite = new Sprite(Assets.get(selectedTemplate.image));
-                        sprite.scale.set( selectedTemplate.scale ?? 1 );
+                        sprite.scale.set(selectedTemplate.scale ?? 1);
                         const obj = {
                             template: { ...selectedTemplate },
                             position: position,

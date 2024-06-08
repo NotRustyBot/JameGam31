@@ -13,6 +13,11 @@
     "campfireBurning": "campfireBurning.png",
     "path": "path.png",
     "pathTexture": "pathTexture.png",
+
+    "wizard": "wizard.png",
+    "ghost": "ghost.png",
+    "slime": "slime.png",
+    "tf": "tf.png",
     
     "campfireB00": "campfire/0001.png",
     "campfireB01": "campfire/0011.png",
