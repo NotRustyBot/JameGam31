@@ -4,10 +4,11 @@ import { RuneType, areRuneTypesEqual, runeColorDictionary } from "./gestureRecod
 import { ITargetable } from "./targetable";
 import { Vector } from "./types";
 import { MagicMissile } from "./magicMissile";
+import { OutlineFilter } from "pixi-filters";
 
 export class Totem implements ITargetable {
     position = new Vector();
-    range = 50;
+    range = 100;
     game: Game;
     sprite: Sprite;
     loadedSymbol: RuneType | undefined = undefined;
@@ -15,6 +16,13 @@ export class Totem implements ITargetable {
         this.game = game;
         this.sprite = new Sprite(Assets.get("totem"));
         this.sprite.anchor.set(0.5);
+        this.sprite.scale.set(0.3);
+        this.sprite.filters = [
+            new OutlineFilter({
+                color: 0xffffff,
+                thickness: 10,
+            }),
+        ]
         game.genericUpdatables.add(this);
         game.player.registerTarget(this);
         game.poiContainer.addChild(this.sprite);
@@ -28,6 +36,7 @@ export class Totem implements ITargetable {
 
     onSpell(rune: RuneType): void {
         this.loadedSymbol = rune;
+        this.sprite.texture = Assets.get("totemLit");
     }
 
     showSymbols() {

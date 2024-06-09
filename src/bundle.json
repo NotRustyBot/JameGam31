@@ -10,6 +10,7 @@
     "glow": "glow.png",
     "projectile": "projectile.png",
     "totem": "totem.png",
+    "totemLit": "totemLit.png",
     "campfire": "campfire.png",
     "campfireBurning": "campfireBurning.png",
     "path": "path.png",
@@ -22,7 +23,7 @@
     "ghost": "ghost.png",
     "slime": "slime.png",
     "tf": "tf.png",
-    
+
     "campfireB00": "campfire/0001.png",
     "campfireB01": "campfire/0011.png",
     "campfireB02": "campfire/0021.png",
@@ -53,7 +54,6 @@
 
     "redDust": "redDust.png",
 
-
     "slime1": "slime1.png",
     "slime2": "slime2.png",
     "slime3": "slime3.png",
@@ -70,10 +70,9 @@
     "tutorial_totems": "tutorial/totems.png",
     "tutorial_missile": "tutorial/missile.png",
 
-
     "mainProfile": "mainProfile.png",
     "bubble": "bubble.png",
-    
+
     "buff": "buff.png",
     "playerHp": "playerHp.png",
     "hpBar": "hpBar.png",
@@ -83,7 +82,13 @@
     "obelisk1": "obelisk1.png",
     "obelisk2": "obelisk2.png",
     "obelisk3": "obelisk3.png",
-    "grassTextureYellowFlowers": "GrassTextureYellowFlowers.png"
+    "grassTextureYellowFlowers": "GrassTextureYellowFlowers.png",
 
+    "log": "log.png",
+    "logFlat": "logFlat.png",
+    "tree1": "tree1.png",
+    "tree2": "tree2.png",
+    "bush": "bush.png",
+    "shadow": "shadow.png"
 
 }

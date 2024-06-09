@@ -3,6 +3,7 @@ import { Game } from "./game";
 import { RuneColor, RuneSymbol, RuneType, areRuneTypesEqual, randomRuneType, runeColorDictionary } from "./gestureRecodniser";
 import { ITargetable } from "./targetable";
 import { Vector } from "./types";
+import { OutlineFilter } from "pixi-filters";
 
 const fills = [RuneSymbol.triangle, RuneSymbol.square, RuneSymbol.circle];
 
@@ -32,6 +33,12 @@ export class Obelisk implements ITargetable {
         this.charge1Sprite.tint = 0x000000;
         this.charge1Sprite.alpha = 0.5;
 
+        this.sprite.filters = [
+            new OutlineFilter({
+                color: 0xffffff,
+                thickness: 10,
+            }),
+        ]
 
         this.game.glowContainer.addChild(this.charge1Sprite);
         this.charge2Sprite = new Sprite(Assets.get("glow"));

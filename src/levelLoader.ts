@@ -11,6 +11,7 @@ import { Ghost } from "./ghost";
 import { Slime } from "./slime";
 import { BigOoze } from "./bigOoze";
 import { Obelisk } from "./obelisk";
+import { Foliage } from "./foliage";
 
 type ObjectTemplateData = {
     position: { x: number; y: number };
@@ -85,7 +86,28 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
         game.redDust = totem;
         totem.position.set(data.position.x, data.position.y);
     },
+    ["tree"]: (game, data) => {
+        const foliage = new Foliage(game, data.template.name);
+        foliage.position.set(data.position.x, data.position.y);
+        foliage.init();
+    },
+    ["bush"]: (game, data) => {
+        const foliage = new Foliage(game, data.template.name);
+        foliage.position.set(data.position.x, data.position.y);
+        foliage.init();
+    },
+    ["log"]: (game, data) => {
+        const foliage = new Foliage(game, data.template.name);
+        foliage.position.set(data.position.x, data.position.y);
+        foliage.init();
+    },
+    ["logFlat"]: (game, data) => {
+        const foliage = new Foliage(game, data.template.name);
+        foliage.position.set(data.position.x, data.position.y);
+        foliage.init();
+    },
 };
+
 
 export function loadLevel(game: Game) {
     for (const datum of data) {

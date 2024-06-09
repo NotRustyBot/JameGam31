@@ -17,6 +17,7 @@ import { ExMahcina as ExMachina } from "./exMachina";
 import { UIManager } from "./uiManager";
 import { Obelisk } from "./obelisk";
 import { BigOoze } from "./bigOoze";
+import { Foliage } from "./foliage";
 
 export class Game {
     keys: Record<string, boolean> = {};
@@ -28,11 +29,13 @@ export class Game {
     targetUIContainer = new Container();
     pathContainer = new Container();
     enemyContainer = new Container();
+    shadowContainer = new Container();
     particlesContainer = new Container();
     spellsContainer = new Container();
     poiContainer = new Container();
     overlayContainer = new Container();
     glowContainer = new Container();
+    foliageContainer = new Container();
     uiContainer = new Container();
     gestureRecodiniser!: GestureRecodniser;
     soundManager!: SoundManager;
@@ -60,6 +63,7 @@ export class Game {
     bigOoze!: BigOoze;
 
     backdrop!: TilingSprite;
+    foliage = new Set<Foliage>;
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
         app.ticker.add((time) => this.loop(time.deltaTime));
         this.app = app;
@@ -97,6 +101,8 @@ export class Game {
         app.stage.addChild(this.uiContainer);
         app.stage.addChild(this.overlayContainer);
         this.worldContainer.addChild(this.pathContainer);
+        this.worldContainer.addChild(this.shadowContainer);
+        this.worldContainer.addChild(this.foliageContainer);
         this.worldContainer.addChild(this.poiContainer);
         this.worldContainer.addChild(this.playerContainer);
         this.worldContainer.addChild(this.enemyContainer);
@@ -146,6 +152,8 @@ export class Game {
         fontFamily: "PermanentMarker",
     });
 
+    foliageCheck = 10;
+
     loop(dt: number) {
         this.timeManager.update(dt);
         if (this.gestureRecodiniser.playState == PlayState.playing) {
@@ -165,6 +173,14 @@ export class Game {
 
         for (const genericUpdatable of this.genericUpdatables) {
             genericUpdatable.update(gdt);
+        }
+
+        this.foliageCheck--;
+        if (this.foliageCheck < 0) {
+            this.foliageCheck = 10;
+            for (const foliage of this.foliage) {
+                foliage.update(gdt);
+            }
         }
 
         this.gestureRecodiniser.update(gdt);

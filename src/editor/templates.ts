@@ -54,4 +54,24 @@ export const templates: ObjectTemplateData[] = [
         name: "redDust",
         image: "redDust",
     },
+    {
+        name: "log",
+        image: "log",
+        scale: 0.5,
+    },
+    {
+        name: "logFlat",
+        image: "logFlat",
+        scale: 0.5,
+    },
+    {
+        name: "tree",
+        image: "tree1",
+        scale: 0.5,
+    },
+    {
+        name: "bush",
+        image: "bush",
+        scale: 0.5,
+    },
 ];
