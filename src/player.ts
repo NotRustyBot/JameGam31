@@ -123,7 +123,7 @@ export class Player {
         }
 
         if (controlVector.lengthSquared() > 0) {
-            if (this.game.keys["shift"]) {
+            if (this.game.keys["shift"] && false) {
                 controlVector.normalize(this.speed * 10);
                 const nextPosition = this.position.result().add(controlVector);
                 this.game.camera.moveTo(nextPosition, 10);
