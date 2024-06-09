@@ -25,24 +25,29 @@ export class Splash {
         this.happenings.add(h);
     }
 
-    tutorial(graphic: string, time: number, slow = 0.5) {
+    tutorial(graphic: string, condition: () => boolean, slow = 0.5, ) {
         const sprite = new Sprite(Assets.get(graphic));
         sprite.anchor.set(1, 0);
         this.game.overlayContainer.addChild(sprite);
         let elapsed = 0;
+        let condditionMet = false;
         const h = (dt: number) => {
             sprite.x = this.game.camera.size.x;
-            elapsed += dt;
 
             if (elapsed < 30) {
                 sprite.alpha = elapsed / 30;
+                elapsed += dt;
             }
 
-            if (elapsed > time - 30) {
-                sprite.alpha = (time - elapsed) / 30;
+            if (condditionMet) {
+                elapsed += dt;
+                sprite.alpha = (30 - elapsed) / 30;
+            }else if(condition()){
+                condditionMet = true;
             }
 
-            if (elapsed > time) {
+
+            if (elapsed > 60) {
                 this.happenings.delete(h);
                 sprite.destroy();
             }
@@ -123,7 +128,7 @@ export class Splash {
                     sprite.texture = Assets.get(card);
                 }
                 const r = (25 - rt) / 25;
-                sprite.scale.x = Math.abs(r)/2;
+                sprite.scale.x = Math.abs(r) / 2;
             }
 
             if (t > 250) {
@@ -286,38 +291,35 @@ export class Splash {
         thanks.position.y = 500;
         thanks.position.x = 100;
 
-        const lineup =  new Sprite(Assets.get("lineup"));
-        lineup.position.x = window.innerWidth ;
+        const lineup = new Sprite(Assets.get("lineup"));
+        lineup.position.x = window.innerWidth;
         lineup.position.y = window.innerHeight;
         lineup.anchor.set(0, 1);
         lineup.scale.set(-0.75, 0.75);
         lineup.alpha = 0;
 
-        const card1 =  new Sprite(Assets.get("card1"));
+        const card1 = new Sprite(Assets.get("card1"));
         card1.position.x = window.innerWidth - 450;
         card1.position.y = 400;
         card1.scale.set(0.3);
         card1.anchor.set(0.5, 1);
-        card1.rotation = -0.3
+        card1.rotation = -0.3;
         card1.alpha = 0;
 
-        const card2 =  new Sprite(Assets.get("card2"));
-        card2.position.x =window.innerWidth - 350;
+        const card2 = new Sprite(Assets.get("card2"));
+        card2.position.x = window.innerWidth - 350;
         card2.position.y = 400;
         card2.scale.set(0.3);
         card2.anchor.set(0.5, 1);
         card2.alpha = 0;
 
-        const card3 =  new Sprite(Assets.get("card3"));
+        const card3 = new Sprite(Assets.get("card3"));
         card3.position.x = window.innerWidth - 250;
         card3.position.y = 400;
         card3.scale.set(0.3);
         card3.anchor.set(0.5, 1);
-        card3.rotation = 0.3
+        card3.rotation = 0.3;
         card3.alpha = 0;
-
-
-
 
         this.game.overlayContainer.addChild(lineup);
         this.game.overlayContainer.addChild(namesText);

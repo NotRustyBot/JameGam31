@@ -123,7 +123,7 @@ export class Player {
         }
 
         if (controlVector.lengthSquared() > 0) {
-            if (this.game.keys["shift"] && false) {
+            if (this.game.keys["shift"]) {
                 controlVector.normalize(this.speed * 10);
                 const nextPosition = this.position.result().add(controlVector);
                 this.game.camera.moveTo(nextPosition, 10);
@@ -163,11 +163,9 @@ export class Player {
 
         if (this.game.gestureRecodiniser.playState != PlayState.playing) {
             for (const target of this.potentialTargets) {
-                if (this.position.distanceSquared(target.position) < this.targetRange ** 2) {
-                    if (this.game.mouseWorldPosition().distanceSquared(target.position) < target.range ** 2) {
-                        this.target = target;
-                        break;
-                    }
+                if (this.game.mouseWorldPosition().distanceSquared(target.position) < target.range ** 2) {
+                    this.target = target;
+                    break;
                 }
             }
         }

@@ -1,6 +1,7 @@
 import { BigOoze } from "./bigOoze";
 import { Campfire } from "./campfire";
 import { Game } from "./game";
+import { PlayState, RuneColor, RuneSymbol, areRuneTypesEqual } from "./gestureRecodniser";
 import { Ghost } from "./ghost";
 import { MagicMissile } from "./magicMissile";
 import { Slime } from "./slime";
@@ -43,10 +44,12 @@ export class ExMahcina {
     obeliskSpotted = false;
 
     update(dt: number) {
-        if(this.game.obelisk.charge == 3) return;
+        if (this.game.obelisk.charge == 3) return;
 
         if (!this.mouseTutorial) {
-            this.game.timeManager.schedule(100, () => this.game.splash.tutorial("tutorial_mouse", 500));
+            this.game.timeManager.schedule(100, () => this.game.splash.tutorial("tutorial_mouse", () => {
+                return this.game.gestureRecodiniser.playState == PlayState.playing;
+            }));
             this.game.timeManager.schedule(100, () => this.game.soundManager.voiceline("1"));
             this.mouseTutorial = true;
         }
@@ -64,7 +67,9 @@ export class ExMahcina {
 
             if (!this.redTutorial) {
                 if (this.game.player.target === campfire) {
-                    this.game.splash.tutorial("tutorial_redTriangle", 500);
+                    this.game.splash.tutorial("tutorial_redTriangle", () => {
+                        return areRuneTypesEqual(this.game.player.preparedRune, { color: RuneColor.red, symbol: RuneSymbol.triangle });
+                    });
                     this.redTutorial = true;
                 }
             }
@@ -101,8 +106,9 @@ export class ExMahcina {
             const ghost = this.game.tagged.get("ghost1") as Ghost;
             if (ghost.position.distance(this.game.player.position) < 900) {
                 this.ghostMet = true;
-                this.game.player.target = ghost;
-                this.game.splash.tutorial("tutorial_combat", 500, 0.1);
+                this.game.splash.tutorial("tutorial_combat", ()=>{
+                    return this.game.player.target == ghost && this.game.player.targetInRange && areRuneTypesEqual(this.game.player.preparedRune, { color: RuneColor.green, symbol: RuneSymbol.circle });                 
+                }, 0.1);
                 this.game.soundManager.voiceline("4");
             }
         }
@@ -137,7 +143,9 @@ export class ExMahcina {
             const totem = this.game.tagged.get("totem1") as Totem;
             if (totem.position.distance(this.game.player.position) < 400) {
                 this.totemTutorial = true;
-                this.game.timeManager.schedule(150, () => this.game.splash.tutorial("tutorial_totems", 500));
+                this.game.timeManager.schedule(150, () => this.game.splash.tutorial("tutorial_totems", ()=>{
+                    return areRuneTypesEqual(totem.loadedSymbol, { color: RuneColor.green, symbol: RuneSymbol.circle });
+                }));
                 this.game.soundManager.voiceline("5");
             }
         }
@@ -146,7 +154,10 @@ export class ExMahcina {
             for (const spell of this.game.spells) {
                 if (spell instanceof MagicMissile) {
                     this.missileTutorial = true;
-                    this.game.splash.tutorial("tutorial_missile", 500, 0.01);
+                    this.game.splash.tutorial("tutorial_missile", () =>{
+                        return areRuneTypesEqual(this.game.player.preparedRune, { color: RuneColor.blue, symbol: RuneSymbol.triangle }) && 
+                        this.game.player.target instanceof MagicMissile;
+                    }, 0.01);
                     break;
                 }
             }
@@ -179,7 +190,7 @@ export class ExMahcina {
                 this.wizardDefeated = true;
                 this.game.splash.card("card2");
                 this.game.soundManager.voiceline("11");
-        }
+            }
         }
 
         if (!this.lastCharge) {
@@ -192,7 +203,7 @@ export class ExMahcina {
         if (this.enableWeather) {
             this.game.soundManager.ambientTracks["rain"].level = Math.max(this.game.soundManager.ambientTracks["rain"].level, (1000 / (this.weatherCooldown + 1) - 1) * 2);
             this.game.soundManager.ambientTracks["rain"].level = Math.min(this.game.soundManager.ambientTracks["rain"].level, 2);
-            
+
             if (this.weatherCooldown > 0) {
                 this.weatherCooldown -= dt;
             } else {

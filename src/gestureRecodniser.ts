@@ -346,7 +346,7 @@ export class GestureRecodniser {
                 this.game.soundManager.sound("spellTouch", 1, this.game.player.position, 0.7 + index * 0.1);
             };
 
-            if (currentMouse.distance(runePosition) < 0.25 * this.size) {
+            if (currentMouse.distance(runePosition) < 0.3 * this.size) {
                 if (this.runeColor == undefined) {
                     this.runeColor = rune.color;
                     this.playedArray.push(index);

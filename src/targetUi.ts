@@ -32,8 +32,8 @@ export class TargetUI {
         this.healthBg.anchor.set(0.5);
         runes = runes.slice(Math.max(runes.length - 6, 0));
         this.container.addChild(this.healthBg);
-        for (let index = 0; index < runes.length; index++) {
-            const element = runes[index];
+        for (let index = runes.length - 1; index >= 0; index--) {
+            const element = runes[runes.length - 1 - index];
             const sprite = new Sprite(Assets.get(symbolToSprite[element.symbol]));
             this.container.addChild(sprite);
             sprite.tint = runeColorDictionary[element.color];
@@ -41,7 +41,7 @@ export class TargetUI {
             sprite.anchor.set(0.5);
             sprite.rotation = Math.sin(index) * 0.2;
             sprite.x = index * 50 - (150 * count) / 6 + 25;
-            if (index < runes.length - 1) {
+            if (index != 0) {
                 sprite.alpha = 0.5;
             }
         }

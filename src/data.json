@@ -378,5 +378,6 @@
     { "template": { "name": "bush", "image": "bush", "scale": 0.5 }, "position": { "x": 8904.599999999995, "y": 1264.9499999999998 } },
     { "template": { "name": "bush", "image": "bush", "scale": 0.5 }, "position": { "x": 7504.599999999995, "y": 609.9499999999998 } },
     { "template": { "name": "bush", "image": "bush", "scale": 0.5 }, "position": { "x": 5384.599999999995, "y": 544.9499999999998 } },
-    { "template": { "name": "bush", "image": "bush", "scale": 0.5 }, "position": { "x": 3304.599999999995, "y": 1504.9499999999998 } }
+    { "template": { "name": "bush", "image": "bush", "scale": 0.5 }, "position": { "x": 3304.599999999995, "y": 1504.9499999999998 } },
+    { "template": { "name": "campfire", "image": "campfire", "scale": 0.5 }, "position": { "x": 13500, "y": 4740 } }
 ]

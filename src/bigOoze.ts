@@ -9,6 +9,7 @@ export class BigOoze {
     game: Game;
     position = new Vector();
     sprite: Sprite;
+    slime: Slime | undefined;
     constructor(game: Game) {
         this.game = game;
         game.genericUpdatables.add(this);
@@ -27,7 +28,7 @@ export class BigOoze {
     fullAutoCooldown = 0;
 
     update(dt: number) {
-        if(this.game.obelisk.charge == 3) return;
+        if (this.game.obelisk.charge == 3) return;
         this.sprite.position.set(this.position.x, this.position.y);
 
         this.sprite.scale.y = Math.sin(this.game.timeManager.timeElapsed * 0.05) * 0.1 + 1;
@@ -46,14 +47,17 @@ export class BigOoze {
             this.ticker %= 10;
 
             if (this.ticker == 5) {
-                const position = new Vector(this.position.x, this.position.y + 500 - this.ticker * 200);
-                this.game.splash.incoming(position, 200);
-                this.game.timeManager.schedule(200, () => {
-                    const enemy = new Slime(this.game);
-                    enemy.position.set(position.x, position.y);
-                    enemy.maxHealth = 6;
-                    enemy.randomHealth("slime");
-                });
+                if (this.slime != undefined && this.slime.health.length == 0) {
+                    const position = new Vector(this.position.x, this.position.y + 500 - this.ticker * 200);
+                    this.game.splash.incoming(position, 200);
+                    this.game.timeManager.schedule(200, () => {
+                        const enemy = new Slime(this.game);
+                        enemy.position.set(position.x, position.y);
+                        enemy.maxHealth = 6;
+                        enemy.randomHealth("slime");
+                        this.slime = enemy;
+                    });
+                }
             }
 
             if (this.ticker == 6) {
@@ -61,17 +65,17 @@ export class BigOoze {
             }
 
             if (this.ticker == 0) {
-                const count = 6
-               for (let index = 0; index < count; index++) {
-                const position = new Vector(this.position.x + 500, this.position.y - 500).add(Vector.fromAngle(index / count * Math.PI * 2).mult(100));
-                this.game.splash.incoming(position, 200);
-                this.game.timeManager.schedule(200, () => {
-                    const enemy = new Ghost(this.game);
-                    enemy.position.set(position.x, position.y);
-                    enemy.maxHealth = 2;
-                    enemy.randomHealth("greenCircles");
-                });
-               }
+                const count = 6;
+                for (let index = 0; index < count; index++) {
+                    const position = new Vector(this.position.x + 500, this.position.y - 500).add(Vector.fromAngle((index / count) * Math.PI * 2).mult(100));
+                    this.game.splash.incoming(position, 200);
+                    this.game.timeManager.schedule(200, () => {
+                        const enemy = new Ghost(this.game);
+                        enemy.position.set(position.x, position.y);
+                        enemy.maxHealth = 2;
+                        enemy.randomHealth("greenCircles");
+                    });
+                }
             }
         }
 

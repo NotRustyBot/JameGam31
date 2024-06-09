@@ -94,5 +94,11 @@
     "shadow": "shadow.png",
     
     "voicebox": "voicebox.png",
-    "lineup": "lineup.png"
+    "lineup": "lineup.png",
+
+    "health1": "health/health1.png",
+    "health2": "health/health2.png",
+    "health3": "health/health3.png",
+    "health4": "health/health4.png",
+    "health5": "health/health5.png"
 }
