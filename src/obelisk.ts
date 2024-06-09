@@ -92,8 +92,8 @@ export class Obelisk implements ITargetable {
             }
 
             if (this.charge == 3) {
-                //big W
                 this.sprite.texture = Assets.get("obelisk3");
+                this.game.splash.victory();
                 return;
             }
             let time = 500;

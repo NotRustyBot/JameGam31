@@ -43,6 +43,8 @@ export class ExMahcina {
     obeliskSpotted = false;
 
     update(dt: number) {
+        if(this.game.obelisk.charge == 3) return;
+
         if (!this.mouseTutorial) {
             this.game.timeManager.schedule(100, () => this.game.splash.tutorial("tutorial_mouse", 500));
             this.game.timeManager.schedule(100, () => this.game.soundManager.voiceline("1"));

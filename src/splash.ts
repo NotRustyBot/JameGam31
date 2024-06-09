@@ -1,5 +1,5 @@
 import { Assets, Container, Graphics, Sprite, Text } from "pixi.js";
-import { Game } from "./game";
+import { Game, getRandom } from "./game";
 import { Vector } from "./types";
 
 type Happening = (dt: number) => void;
@@ -54,10 +54,10 @@ export class Splash {
     monologue(text: string, time: number) {
         const container = new Container();
         const mainSprite = new Sprite(Assets.get("mainProfile"));
-        const bubble = new Sprite(Assets.get("bubble"));
-        const textSprie = new Text({ text: "", style: { fontSize: 25, fill: 0x000000, wordWrap: true, wordWrapWidth: bubble.width - 130, fontFamily: "PermanentMarker" } });
+        const bubble = new Sprite(Assets.get("voicebox"));
+        const textSprie = new Text({ text: "", style: { fontSize: 25, fill: 0x000000, wordWrap: true, wordWrapWidth: bubble.width - 150, fontFamily: "PermanentMarker" } });
         textSprie.x = -bubble.width / 2 + 110;
-        textSprie.y = -80;
+        textSprie.y = -100;
         bubble.anchor.set(0.5);
         mainSprite.anchor.set(0.5);
         mainSprite.x = -bubble.width / 2 - 50;
@@ -91,15 +91,21 @@ export class Splash {
         this.happenings.add(h);
     }
 
-    card(card: string) {
+    card(card: string, win = false) {
         let t = 0;
         const graphics = new Graphics();
-        graphics.rect(0, 0, this.game.camera.size.x, this.game.camera.size.y);
-        graphics.fill({ color: 0x000000, alpha: 1 });
+
+        if (!win) {
+            graphics.rect(0, 0, this.game.camera.size.x, this.game.camera.size.y);
+            graphics.fill({ color: 0x000000, alpha: 1 });
+        }
         this.game.overlayContainer.addChild(graphics);
         const sprite = new Sprite(Assets.get("cardback"));
         sprite.anchor.set(0.5);
         sprite.position.set(this.game.camera.size.x / 2, -500);
+        if (win) {
+            sprite.position.set((this.game.camera.size.x / 4) * 3, -500);
+        }
         this.game.overlayContainer.addChild(sprite);
         const h = (dt: number) => {
             t += dt;
@@ -184,6 +190,7 @@ export class Splash {
     }
 
     lightning() {
+        this.game.soundManager.sound(getRandom(["thunder1", "thunder3", "thunder2"]), 1);
         let time = 10;
         const h = (dt: number) => {
             time -= dt * this.game.timeManager.gameRate;
@@ -194,6 +201,124 @@ export class Splash {
                 this.game.shadowGraphics.alpha = 1;
 
                 return;
+            }
+        };
+        this.happenings.add(h);
+    }
+
+    victory() {
+        const whitefill = new Graphics();
+        whitefill.rect(0, 0, this.game.camera.size.x, this.game.camera.size.y);
+        whitefill.fill({ color: 0xffffff });
+        this.game.overlayContainer.addChild(whitefill);
+
+        for (const enemy of this.game.enemies) {
+            enemy.remove();
+        }
+        for (const spell of this.game.spells) {
+            spell.remove();
+        }
+
+        this.game.soundManager.ambientTracks["spell"].level = 0;
+        this.game.soundManager.ambientTracks["campfire"].level = 0;
+        this.game.soundManager.ambientTracks["rain"].level = 0;
+        this.game.soundManager.sound("victory", 0.5, this.game.player.position);
+
+        let t = 0;
+
+        const credits = [
+            ["NotRustyBot", "Code"],
+            ["Andy Lin", "Music"],
+            ["B0tLAS", "Voice"],
+            ["Monkey435", "Playtesting"],
+            ["Omni", "Playtesting"],
+        ];
+
+        const names = credits.map((c) => c[0]).join("\n");
+        const positions = credits.map((c) => c[1]).join("\n");
+
+        const namesText = new Text({
+            text: names,
+            style: {
+                fontSize: 36,
+                fill: 0x55ff55,
+                fontFamily: "PermanentMarker",
+                align: "left",
+            },
+        });
+
+        namesText.anchor.set(0, 0.5);
+
+        namesText.position.x = 310;
+        namesText.position.y = 200;
+
+        const posText = new Text({
+            text: positions,
+            style: {
+                fontSize: 36,
+                fill: 0x5555ff,
+                fontFamily: "PermanentMarker",
+                align: "right",
+            },
+        });
+        posText.anchor.set(1, 0.5);
+        posText.position.x = 300;
+        posText.position.y = 200;
+
+        namesText.alpha = 0;
+        posText.alpha = 0;
+
+        const thanks = new Text({
+            text: "Thanks for playing!",
+            style: {
+                fontSize: 48,
+                fill: 0xffaa55,
+                fontFamily: "PermanentMarker",
+                align: "right",
+            },
+        });
+        thanks.alpha = 0;
+        thanks.position.y = 500;
+        thanks.position.x = 100;
+
+        const lineup =  new Sprite(Assets.get("lineup"));
+        lineup.position.x = window.innerWidth ;
+        lineup.position.y = window.innerHeight;
+        lineup.anchor.set(0, 1);
+        lineup.scale.set(-1, 1);
+        lineup.alpha = 0;
+
+        this.game.overlayContainer.addChild(namesText);
+        this.game.overlayContainer.addChild(posText);
+        this.game.overlayContainer.addChild(thanks);
+        this.game.overlayContainer.addChild(lineup);
+
+        let card = false;
+
+        const h = (dt: number) => {
+            t += dt;
+            this.game.soundManager.musicTarget = 0;
+
+            if (!card && t > 250) {
+                this.card("card1", true);
+                this.game.soundManager.voiceline("18");
+                this.game.soundManager.voiceline("19");
+                card = true;
+            }
+
+            if (t > 600 && t < 800) {
+                posText.alpha = (t - 600) / 200;
+                namesText.alpha = (t - 600) / 200;
+            }
+
+            if (t > 1000 && t < 1100) {
+                lineup.alpha = (t - 1000) / 100;
+            }
+
+            if (t > 1500 && t < 1600) {
+           
+
+                thanks.alpha = (t - 1500) / 100;
             }
         };
         this.happenings.add(h);

@@ -27,6 +27,7 @@ export class BigOoze {
     fullAutoCooldown = 0;
 
     update(dt: number) {
+        if(this.game.obelisk.charge == 3) return;
         this.sprite.position.set(this.position.x, this.position.y);
 
         this.sprite.scale.y = Math.sin(this.game.timeManager.timeElapsed * 0.05) * 0.1 + 1;

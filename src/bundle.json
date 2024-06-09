@@ -89,6 +89,8 @@
     "tree1": "tree1.png",
     "tree2": "tree2.png",
     "bush": "bush.png",
-    "shadow": "shadow.png"
-
+    "shadow": "shadow.png",
+    
+    "voicebox": "voicebox.png",
+    "lineup": "lineup.png"
 }

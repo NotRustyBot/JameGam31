@@ -122,6 +122,7 @@ export class Game {
 
         app.stage.addChild(this.debugText);
         this.debugText.y = 100;
+        this.debugText.visible = false;
     }
 
     resize() {
