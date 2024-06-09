@@ -232,6 +232,7 @@ export class Splash {
             ["B0tLAS", "Voice"],
             ["Monkey435", "Playtesting"],
             ["Omni", "Playtesting"],
+            ["Jake Greenstein", "Sound Effects"],
         ];
 
         const names = credits.map((c) => c[0]).join("\n");
