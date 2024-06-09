@@ -1,4 +1,4 @@
-import { Assets, Container, MeshRope, Sprite } from "pixi.js";
+import { AnimatedSprite, Assets, Container, MeshRope, Sprite } from "pixi.js";
 import { Game } from "./game";
 import { Vector } from "./types";
 import { RuneColor, RuneSymbol, RuneType, areRuneTypesEqual, randomRuneType, runeColorDictionary } from "./gestureRecodniser";
@@ -6,7 +6,7 @@ import { ITargetable } from "./targetable";
 
 export class EnemyBase implements ITargetable {
     position: Vector;
-    sprite!: Sprite;
+    sprite!: Sprite | AnimatedSprite;
     health: Array<RuneType> = new Array<RuneType>();
     game: Game;
     range = 100;

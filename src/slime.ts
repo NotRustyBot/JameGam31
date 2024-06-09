@@ -1,5 +1,5 @@
 import { Assets, Container, MeshRope, Point, Sprite } from "pixi.js";
-import { Game } from "./game";
+import { Game, getRandom } from "./game";
 import { HostileSpell } from "./hostileSpell";
 import { EnemyBase } from "./enemyBase";
 import { SlimeBall } from "./slimeball";
@@ -10,7 +10,7 @@ export class Slime extends EnemyBase {
         super(game);
 
         this.sprite = new Sprite({
-            texture: Assets.get("slime1"),
+            texture: Assets.get(getRandom(["slime1", "slime2", "slime3", "slime4", "slime5"])),
         });
         this.sprite.scale.set(0.5);
         this.sprite.anchor.set(0.5, 1);
@@ -30,7 +30,7 @@ export class Slime extends EnemyBase {
             time += dt;
             const ratio = time / length;
             this.sprite.alpha = 1 - ratio;
-            this.sprite.scale.y = 0.5 - (ratio ** 0.5) * 0.25;
+            this.sprite.scale.y = 0.5 - ratio ** 0.5 * 0.25;
             if (time > length) {
                 this.game.splash.happenings.delete(h);
                 this.remove();
@@ -41,7 +41,7 @@ export class Slime extends EnemyBase {
     }
 
     update(dt: number) {
-        if(this.health.length === 0) return;
+        if (this.health.length === 0) return;
         const player = this.game.player;
 
         const prefferedDistance = 100;

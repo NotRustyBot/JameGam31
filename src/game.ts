@@ -1,4 +1,4 @@
-import { Application, Assets, Container, Graphics, Matrix, RenderTexture, Sprite, Text } from "pixi.js";
+import { Application, Assets, Container, Graphics, Matrix, RenderTexture, Sprite, Text, Texture, TilingSprite, WRAP_MODES } from "pixi.js";
 import { Player } from "./player";
 import { Camera } from "./camera";
 import { GestureRecodniser, PlayState } from "./gestureRecodniser";
@@ -58,6 +58,8 @@ export class Game {
     uiManager!: UIManager;
     obelisk!: Obelisk;
     bigOoze!: BigOoze;
+
+    backdrop!: TilingSprite;
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
         app.ticker.add((time) => this.loop(time.deltaTime));
         this.app = app;
@@ -70,6 +72,19 @@ export class Game {
         this.mouse = mouse;
         this.targetUI = new TargetUI(this);
         this.player = new Player(this);
+
+        const bgTexture = Assets.get("grassTextureYellowFlowers") as Texture;
+
+        this.backdrop = TilingSprite.from(bgTexture, {
+            width: app.canvas.width,
+            height: app.canvas.height,
+            tileScale: {
+                x: 2,
+                y: 2,
+            },
+        });
+
+        app.stage.addChild(this.backdrop);
         app.stage.addChild(this.worldContainer);
         app.stage.addChild(this.gestureContainer);
         this.lightRenderTexture = RenderTexture.create({ width: app.canvas.width, height: app.canvas.height });
@@ -162,6 +177,8 @@ export class Game {
             transform: transform,
             target: this.lightRenderTexture,
         });
+
+        this.backdrop.tilePosition.set(-this.camera.position.x, -this.camera.position.y);
 
         this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(2)}\nHealth: ${this.player.health}\nMusic: ${this.soundManager.music.toFixed(
             2

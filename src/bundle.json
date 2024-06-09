@@ -55,6 +55,14 @@
 
 
     "slime1": "slime1.png",
+    "slime2": "slime2.png",
+    "slime3": "slime3.png",
+    "slime4": "slime4.png",
+    "slime5": "slime5.png",
+
+    "ghost1": "ghost1.png",
+    "ghost2": "ghost2.png",
+    "ghost3": "ghost3.png",
 
     "tutorial_mouse": "tutorial/mouse.png",
     "tutorial_redTriangle": "tutorial/redTriangle.png",
@@ -71,6 +79,6 @@
     "hpBar": "hpBar.png",
     "wizardBoss": "wizardBoss.png",
     "bigOoze": "bigOoze.png",
-    "obelisk": "obelisk.png"
-    
+    "obelisk": "obelisk.png",
+    "grassTextureYellowFlowers": "GrassTextureYellowFlowers.png"
 }

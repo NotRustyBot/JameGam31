@@ -1,4 +1,4 @@
-import { Assets, Container, Sprite } from "pixi.js";
+import { AnimatedSprite, Assets, Container, Sprite, Texture } from "pixi.js";
 import { Game } from "./game";
 import { Vector } from "./types";
 import { EnemyBase } from "./enemyBase";
@@ -7,9 +7,18 @@ export class Ghost extends EnemyBase {
     constructor(game: Game) {
         super(game);
         this.position = new Vector(0, 0);
-        this.sprite = new Sprite(Assets.get("marker"));
+        const sprite = new AnimatedSprite([
+            Assets.get("ghost1") as Texture,
+            Assets.get("ghost2") as Texture,
+            Assets.get("ghost3") as Texture,
+            Assets.get("ghost2") as Texture,
+        ]);
+        this.sprite = sprite;
         this.sprite.tint = 0xffff00;
         this.sprite.anchor.set(0.5);
+        this.sprite.scale.set(0.4);
+        sprite.animationSpeed = 0.1;
+        sprite.play();
         game.enemyContainer.addChild(this.sprite);
     }
 
@@ -51,8 +60,9 @@ export class Ghost extends EnemyBase {
                 if (enemy == this) continue;
 
                 const diff = this.position.diff(enemy.position);
-                if (diff.length() < 100) {
-                    this.position.add(diff.normalize(1));
+                const dist = diff.length();
+                if (dist < 250) {
+                    this.position.add(diff.normalize(dist/250 * 3));
                 }
             }
         }
