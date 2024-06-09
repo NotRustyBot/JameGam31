@@ -15,7 +15,7 @@ export class Ghost extends EnemyBase {
 
     speed = 5;
 
-    cooldown = 100;
+    cooldown = 0;
     maxCooldown = 40;
 
     update(dt: number) {

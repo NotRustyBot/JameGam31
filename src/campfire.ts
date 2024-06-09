@@ -81,8 +81,7 @@ export class Campfire implements ITargetable {
 
                 if (safe && this.game.player.health < 5) {
                     this.game.player.health = 5;
-        this.game.uiManager.updateHealth(5);
-
+                    this.game.uiManager.updateHealth(5);
                     for (let index = 0; index < 10; index++) {
                         this.game.splash.magicSpark(this.game.player.position.result(), 0x55ff55, Vector.fromAngle((index / 10) * Math.PI * 2).mult(15), "buff", 0, 0, 0.2);
                     }
@@ -97,8 +96,7 @@ export class Campfire implements ITargetable {
             this.sprite.visible = true;
         }
 
-        this.sprite.position.set(...this.position.xy());
-        this.spriteBurning.position.set(...this.position.xy());
+        this.container.position.set(...this.position.xy());
         this.glow.position.set(...this.position.xy());
     }
 

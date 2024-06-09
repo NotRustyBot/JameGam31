@@ -32,6 +32,10 @@ export class EnemyBase implements ITargetable {
             for (let i = 0; i < this.maxHealth; i++) {
                 this.health.push(randomRuneType([RuneSymbol.circle, RuneSymbol.triangle], [RuneColor.blue]));
             }
+        }else if (family == "slime") {
+            for (let i = 0; i < this.maxHealth; i++) {
+                this.health.push(randomRuneType([RuneSymbol.circle, RuneSymbol.triangle, RuneSymbol.square], [RuneColor.green]));
+            }
         }
     }
 
@@ -67,9 +71,7 @@ export class EnemyBase implements ITargetable {
         }
     }
 
-    startingPosition: Vector | undefined = undefined;
     update(dt: number) {
-        if (this.startingPosition == undefined) this.startingPosition = new Vector(this.position.x, this.position.y);
         this.sprite.position.set(...this.position.xy());
     }
 }

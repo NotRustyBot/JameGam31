@@ -262,7 +262,6 @@ export class GestureRecodniser {
             this.graphics.moveTo(coord.x, coord.y);
             const start = coord.result();
 
-
             if (this.runeSymbol == RuneSymbol.circle) {
                 this.graphics.ellipse(this.game.mouse.position.x, this.game.mouse.position.y, this.size * (0.5 + ratio) - cycleA * 10, this.size * (0.5 + ratio) + cycleB * 10);
                 this.graphics.stroke({ color: color, alpha: alpha, width: 5 });
@@ -271,8 +270,8 @@ export class GestureRecodniser {
             } else {
                 let first = true;
                 for (const played of this.playedArray) {
-                    if(first) {
-                        first =false;
+                    if (first) {
+                        first = false;
                         continue;
                     }
                     coord = this.runeOffset(played, this.size * (0.5 + ratio), this.game.mouse.position);
@@ -285,7 +284,7 @@ export class GestureRecodniser {
 
                 coord = this.runeOffset(this.playedArray[0], this.size * (0.5 + ratio), this.game.mouse.position);
                 const midpoint = start.diff(coord).mult(0.5).add(coord);
-                    this.graphics.bezierCurveTo(midpoint.x - cycleA * 10, midpoint.y + -cycleA * 10, midpoint.x - cycleB * 10, midpoint.y + cycleB * 10, coord.x, coord.y);
+                this.graphics.bezierCurveTo(midpoint.x - cycleA * 10, midpoint.y + -cycleA * 10, midpoint.x - cycleB * 10, midpoint.y + cycleB * 10, coord.x, coord.y);
 
                 this.graphics.stroke({ color: color, alpha: alpha, width: 5 });
             }
@@ -308,14 +307,12 @@ export class GestureRecodniser {
             this.points.push(currentMouse);
         }
 
-
-
         let index = 0;
         for (const rune of this.runeSetup) {
             const cycleA = Math.sin(this.game.timeManager.timeElapsed * 1 + index);
             const cycleB = Math.sin(this.game.timeManager.timeElapsed * 1.1 + index);
             const runePosition = this.runeToPosition(index);
-            this.graphics.ellipse(runePosition.x, runePosition.y, 0.3 * this.size + cycleA * 10,  0.3 * this.size - cycleB * 10);
+            this.graphics.ellipse(runePosition.x, runePosition.y, 0.3 * this.size + cycleA * 10, 0.3 * this.size - cycleB * 10);
 
             let alpha = 0;
             if (this.playedArray.includes(index)) {
@@ -325,16 +322,21 @@ export class GestureRecodniser {
             this.graphics.fill({ color: runeColorDictionary[rune.color], alpha: alpha });
             this.graphics.stroke({ color: runeColorDictionary[rune.color], alpha: 0.75, width: 20 });
 
+            const playsound = () => {
+                this.game.soundManager.sound("spellTouch", 1, this.game.player.position, 0.7 + index * 0.1);
+            };
+
             if (currentMouse.distance(runePosition) < 0.25 * this.size) {
                 if (this.runeColor == undefined) {
                     this.runeColor = rune.color;
                     this.playedArray.push(index);
-                    this.game.soundManager.sound("spellTouch");
+                    playsound();
                 } else {
                     const lastAdded = this.playedArray[this.playedArray.length - 1];
 
                     if (this.playedArray.length > 1) {
                         if (this.playedArray[0] == index) {
+                            playsound();
                             this.finishSymbol();
                             return;
                         }
@@ -342,7 +344,7 @@ export class GestureRecodniser {
 
                     if (lastAdded != index) {
                         this.playedArray.push(index);
-                        this.game.soundManager.sound("spellTouch");
+                        playsound();
                     }
                 }
             }

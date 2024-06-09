@@ -5,12 +5,12 @@ import { Wizard } from "./wizard";
 import { ITargetable } from "./targetable";
 import { PlayState, RuneType } from "./gestureRecodniser";
 import { collision } from "./collision";
-import { mouse } from "./editor/editorRun";
+import { keys, mouse } from "./editor/editorRun";
 import { TimeManager } from "./timeManager";
 
 export class Player {
     position: Vector = new Vector();
-    size = new Vector(32, 32);
+    size = new Vector(50, 50);
     game: Game;
     speed: number = 6;
     sprite: Sprite;
@@ -88,7 +88,7 @@ export class Player {
         return nearest;
     }
 
-    allowDistance = 600;
+    allowDistance = 300;
     nodeCheckCooldown = 0;
     update(dt: number) {
         const controlVector = new Vector();
@@ -116,21 +116,29 @@ export class Player {
         }
 
         if (controlVector.lengthSquared() > 0) {
-            controlVector.normalize(this.speed);
-            const nextPosition = this.position.result().add(controlVector.mult(dt));
-
-            const nearest = this.nearestNode();
-            if (!nearest || nearest.distanceSquared(nextPosition) < this.allowDistance ** 2) {
+            
+            if(this.game.keys["shift"]){
+                controlVector.normalize(this.speed * 10);
+                const nextPosition = this.position.result().add(controlVector.mult(dt));
                 this.position.set(...nextPosition.xy());
+            }else{
+                controlVector.normalize(this.speed);
+                const nextPosition = this.position.result().add(controlVector.mult(dt));
+    
+                const nearest = this.nearestNode();
+                if (!nearest || nearest.distanceSquared(nextPosition) < this.allowDistance ** 2) {
+                    this.position.set(...nextPosition.xy());
+                }
+    
+                for (const wall of this.game.walls) {
+                    const res = collision(wall, this);
+                    if (res) {
+                        this.position.add(res);
+                    }
+                }
+                this.walking++;
             }
 
-            for (const wall of this.game.walls) {
-                const res = collision(wall, this);
-                if (res) {
-                    this.position.add(res);
-                }
-            }
-            this.walking++;
         }
 
         this.walking *= 0.9;

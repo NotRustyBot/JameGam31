@@ -139,7 +139,7 @@ export class Splash {
 
     magicSpark(position: Vector, color: number, velocity: Vector, texture = "marker", chaos = 2, rotation = Math.PI * 2, scale = 0.5) {
         const sprite = new Sprite(Assets.get(texture));
-        sprite.rotation = Math.random() *rotation;
+        sprite.rotation = Math.random() * rotation;
         sprite.tint = color;
         sprite.scale.set(scale);
         sprite.anchor.set(0.5);
@@ -177,6 +177,22 @@ export class Splash {
 
             if (time < 0) {
                 this.happenings.delete(h);
+                return;
+            }
+        };
+        this.happenings.add(h);
+    }
+
+    lightning() {
+        let time = 10;
+        const h = (dt: number) => {
+            time -= dt * this.game.timeManager.gameRate;
+            this.game.shadowGraphics.alpha = 1 - (time % 5) / 5;
+
+            if (time < 0) {
+                this.happenings.delete(h);
+                this.game.shadowGraphics.alpha = 1;
+
                 return;
             }
         };

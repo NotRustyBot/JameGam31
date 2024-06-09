@@ -101,12 +101,10 @@ export class Wizard extends EnemyBase {
                         const position = new Vector(this.position.x, this.position.y);
                         this.game.splash.incoming(position, 200);
                         this.game.timeManager.schedule(200, () => {
-                            this.game.exMachina.ghostsSummoned = true;
                             const enemy = new Ghost(this.game);
                             enemy.position.set(position.x, position.y);
                             enemy.maxHealth = 2;
                             enemy.randomHealth("greenCircles");
-                            this.game.exMachina.summonedGhosts.add(enemy);
                         });
                     } else {
                         let spell = new MagicMissile(this.game);

@@ -69,6 +69,8 @@
     "buff": "buff.png",
     "playerHp": "playerHp.png",
     "hpBar": "hpBar.png",
-    "wizardBoss": "wizardBoss.png"
+    "wizardBoss": "wizardBoss.png",
+    "bigOoze": "bigOoze.png",
+    "obelisk": "obelisk.png"
     
 }

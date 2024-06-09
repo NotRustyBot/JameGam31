@@ -131,10 +131,10 @@ export class SoundManager {
         });
     }
 
-    sound(name: string, volume = 1, position?: Vector) {
+    sound(name: string, volume = 1, position?: Vector, rate = 1) {
         const howl = new Howl({ src: [`sounds/${name}.wav`] });
         howl.volume(volume * this.masterVolume);
-        
+        howl.rate(rate);
         howl.play();
         if (position) {
             const h = (dt: number) => {

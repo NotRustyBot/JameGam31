@@ -15,6 +15,7 @@ import { TimeManager } from "./timeManager";
 import { Splash } from "./splash";
 import { ExMahcina as ExMachina } from "./exMachina";
 import { UIManager } from "./uiManager";
+import { Obelisk } from "./obelisk";
 
 export class Game {
     keys: Record<string, boolean> = {};
@@ -54,6 +55,7 @@ export class Game {
     lightBaseDarkness!: Graphics;
     shadowGraphics!: Graphics;
     uiManager!: UIManager;
+    obelisk!: Obelisk;
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
         app.ticker.add((time) => this.loop(time.deltaTime));
         this.app = app;
@@ -98,8 +100,6 @@ export class Game {
         app.stage.addChild(this.debugText);
         this.debugText.y = 100;
 
-       this.player.position.x = 15000;
-       this.player.position.y = 5000;
     }
 
     resize() {
@@ -147,7 +147,7 @@ export class Game {
         }
 
         this.gestureRecodiniser.update(gdt);
-        this.exMachina.update(dt);
+        this.exMachina.update(gdt);
         this.splash.update(dt);
         this.soundManager.update(gdt);
 
@@ -163,7 +163,7 @@ export class Game {
 
         this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(2)}\nHealth: ${this.player.health}\nMusic: ${this.soundManager.music.toFixed(
             2
-        )}\nDanger: ${this.soundManager.danger.toFixed(2)} -> ${this.soundManager.combatVolume.toFixed(2)}`;
+        )}\nDanger: ${this.soundManager.danger.toFixed(2)} -> ${this.soundManager.combatVolume.toFixed(2)}\nWeather: ${this.exMachina.weatherCooldown.toFixed(0)}`;
     }
 
     mouseWorldPosition(): Vector {

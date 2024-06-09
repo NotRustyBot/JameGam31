@@ -2,11 +2,11 @@ import { Campfire } from "./campfire";
 import { Game } from "./game";
 import { Ghost } from "./ghost";
 import { MagicMissile } from "./magicMissile";
+import { Slime } from "./slime";
 import { Totem } from "./totem";
 import { Wizard } from "./wizard";
 
 export class ExMahcina {
-    cards = 0;
     campfire1Lit = false;
     ghostsSummoned = false;
     ghostsKilled = false;
@@ -22,6 +22,9 @@ export class ExMahcina {
     redTutorial = false;
     ghostMet = false;
     wizardMet = false;
+    slimeMet = false;
+
+    lastCharge = false;
 
     totemTutorial = false;
     redDustSpotted = false;
@@ -29,8 +32,15 @@ export class ExMahcina {
 
     campfireSpotted = false;
 
+    wizardDefeated = false;
+    wizardBossSpotted = false;
+
+
+
+    enableWeather = false;
+    weatherCooldown = 0;
+
     update(dt: number) {
-        return;
         if (!this.mouseTutorial) {
             this.game.timeManager.schedule(100, () => this.game.splash.tutorial("tutorial_mouse", 500));
             this.game.timeManager.schedule(100, () => this.game.soundManager.voiceline("1"));
@@ -77,6 +87,9 @@ export class ExMahcina {
                 this.campfire3Lit = true;
                 this.game.splash.progressTime(1);
                 this.game.soundManager.voiceline("12");
+
+                this.enableWeather = true;
+                this.weatherCooldown = 1000;
             }
         }
 
@@ -96,6 +109,15 @@ export class ExMahcina {
                 this.wizardMet = true;
                 this.game.player.target = wizard;
                 this.game.soundManager.voiceline("9");
+            }
+        }
+
+        if (!this.slimeMet) {
+            const wizard = this.game.tagged.get("slime1") as Slime;
+            if (wizard.position.distance(this.game.player.position) < 600) {
+                this.slimeMet = true;
+                this.game.player.target = wizard;
+                this.game.soundManager.voiceline("13");
             }
         }
 
@@ -139,5 +161,38 @@ export class ExMahcina {
                 this.game.soundManager.voiceline("7");
             }
         }
+
+        if (!this.wizardBossSpotted) {
+            const boss = this.game.tagged.get("wizardBoss") as Wizard;
+            if (boss.position.distance(this.game.player.position) < 900) {
+                this.wizardBossSpotted = true;
+                this.game.soundManager.voiceline("10");
+            }
+        }
+        if (!this.wizardDefeated) {
+            const boss = this.game.tagged.get("wizardBoss") as Wizard;
+            if (boss.health.length === 0) {
+                this.wizardDefeated = true;
+                this.game.splash.card("card1");
+                this.game.soundManager.voiceline("11");
+            }
+        }
+
+        if (!this.lastCharge) {
+            if (this.game.obelisk.charge == 2) {
+                this.lastCharge = true;
+                this.game.soundManager.voiceline("16");
+            }
+        }
+
+        if(this.enableWeather){
+            if(this.weatherCooldown > 0){
+                this.weatherCooldown -= dt;
+            }else{
+                this.game.splash.lightning();
+                this.weatherCooldown = 100 + 500 * Math.random();
+            }
+        }
+
     }
 }

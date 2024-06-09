@@ -9,6 +9,8 @@ import { Vector } from "./types";
 import { Wall } from "./wall";
 import { Ghost } from "./ghost";
 import { Slime } from "./slime";
+import { BigOoze } from "./bigOoze";
+import { Obelisk } from "./obelisk";
 
 type ObjectTemplateData = {
     position: { x: number; y: number };
@@ -21,6 +23,15 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
         totem.position.set(data.position.x, data.position.y);
         if (data.template.tag !== "") game.registerTagged(totem, data.template.tag);
 
+    },
+    ["obelisk"]: (game, data) => {
+        const totem = new Obelisk(game);
+        totem.position.set(data.position.x, data.position.y);
+        totem.updatePosition();
+    },
+    ["bigOoze"]: (game, data) => {
+        const totem = new BigOoze(game);
+        totem.position.set(data.position.x, data.position.y);
     },
     ["wizard"]: (game, data) => {
         const enemy = new Wizard(game);
