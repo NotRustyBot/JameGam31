@@ -18,8 +18,6 @@ const text = new Text("Loading graphics", { fill: 0xffffff });
     text.style.fontFamily = "PermanentMarker";
 
     window.addEventListener("resize", () => {
-        console.log("resize");
-        
         game.resize();
         text.position.set(app.screen.width / 2, app.screen.height - 200);
     });
