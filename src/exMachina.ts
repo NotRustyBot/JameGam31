@@ -157,7 +157,7 @@ export class ExMahcina {
                     this.game.splash.tutorial("tutorial_missile", () =>{
                         return areRuneTypesEqual(this.game.player.preparedRune, { color: RuneColor.blue, symbol: RuneSymbol.triangle }) && 
                         this.game.player.target instanceof MagicMissile;
-                    }, 0.01);
+                    }, 1);
                     break;
                 }
             }
