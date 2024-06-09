@@ -123,7 +123,7 @@ export class Player {
         }
 
         if (controlVector.lengthSquared() > 0) {
-            if (this.game.keys["shift"]) {
+            if (this.game.keys["shift"] && false) {
                 controlVector.normalize(this.speed * 10);
                 const nextPosition = this.position.result().add(controlVector);
                 this.game.camera.moveTo(nextPosition, 10);
@@ -131,7 +131,8 @@ export class Player {
             } else {
                 controlVector.normalize(this.speed * dt);
                 const nextPosition = this.position.result().add(controlVector);
-
+                this.position.set(...nextPosition.xy());
+/*
                 const nearest = this.nearestNode();
                 if (!nearest) {
                 } else {
@@ -147,7 +148,7 @@ export class Player {
                     if (res) {
                         this.position.add(res);
                     }
-                }
+                }*/
                 this.walking++;
             }
         }
