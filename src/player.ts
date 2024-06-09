@@ -26,6 +26,8 @@ export class Player {
 
     nearNodes = new Set<Vector>();
 
+    respawnCoords = new Vector(0, 0);
+
     constructor(game: Game) {
         this.game = game;
         this.sprite = new Sprite(Assets.get("mainProfile"));
@@ -59,8 +61,13 @@ export class Player {
 
     hit() {
         this.health--;
-        this.game.uiManager.updateHealth(this.health);
         this.game.soundManager.sound("damage", 0.5, this.position);
+        if (this.health <= 0) {
+            this.position = this.respawnCoords.result();
+            this.health = 5;
+            this.game.soundManager.sound("impact", 0.5, this.position);
+        }
+        this.game.uiManager.updateHealth(this.health);
     }
 
     walking = 0;
@@ -132,7 +139,7 @@ export class Player {
                     const currentdist = nearest.distanceSquared(this.position);
                     if (nextposdist < this.allowDistance ** 2 || nextposdist < currentdist) {
                         this.position.set(...nextPosition.xy());
-                    } 
+                    }
                 }
 
                 for (const wall of this.game.walls) {

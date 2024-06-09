@@ -79,6 +79,11 @@
     "hpBar": "hpBar.png",
     "wizardBoss": "wizardBoss.png",
     "bigOoze": "bigOoze.png",
-    "obelisk": "obelisk.png",
+    "obelisk0": "obelisk0.png",
+    "obelisk1": "obelisk1.png",
+    "obelisk2": "obelisk2.png",
+    "obelisk3": "obelisk3.png",
     "grassTextureYellowFlowers": "GrassTextureYellowFlowers.png"
+
+
 }

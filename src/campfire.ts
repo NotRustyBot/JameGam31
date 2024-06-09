@@ -118,6 +118,7 @@ export class Campfire implements ITargetable {
         if (rune.color === RuneColor.red && rune.symbol === RuneSymbol.triangle && !this.lit) {
             this.lit = true;
             this.game.player.unregisterTarget(this);
+            this.game.player.respawnCoords = this.position.result();
         }
     }
 }

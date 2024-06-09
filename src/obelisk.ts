@@ -9,7 +9,7 @@ const fills = [RuneSymbol.triangle, RuneSymbol.square, RuneSymbol.circle];
 export class Obelisk implements ITargetable {
     game: Game;
     position = new Vector();
-    range = 100;
+    range = 200;
 
     charge = 0;
 
@@ -21,8 +21,8 @@ export class Obelisk implements ITargetable {
 
     constructor(game: Game) {
         this.game = game;
-        this.sprite = new Sprite(Assets.get("obelisk"));
-        this.sprite.anchor.set(0.5);
+        this.sprite = new Sprite(Assets.get("obelisk0"));
+        this.sprite.anchor.set(0.5,0.5);
         this.sprite.scale.set(0.5);
         this.game.poiContainer.addChild(this.sprite);
         this.charge1Sprite = new Sprite(Assets.get("glow"));
@@ -76,14 +76,17 @@ export class Obelisk implements ITargetable {
             this.charge++;
             if (this.charge == 1) {
                 this.charge1Sprite.visible = true;
+                this.sprite.texture = Assets.get("obelisk1");
             }
 
             if (this.charge == 2) {
                 this.charge2Sprite.visible = true;
+                this.sprite.texture = Assets.get("obelisk2");
             }
 
             if (this.charge == 3) {
                 //big W
+                this.sprite.texture = Assets.get("obelisk3");
                 return;
             }
             let time = 500;
