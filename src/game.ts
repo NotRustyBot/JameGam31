@@ -121,6 +121,8 @@ export class Game {
 
     resize() {
         if (!this.app) return;
+        this.app.canvas.width = window.innerWidth;
+        this.app.canvas.height = window.innerHeight;
         this.lightRenderTexture = RenderTexture.create({ width: this.app.canvas.width, height: this.app.canvas.height });
         this.shadowSprite.texture = this.lightRenderTexture;
         this.shadowGraphics.clear();
