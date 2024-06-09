@@ -1,3 +1,4 @@
+import { BigOoze } from "./bigOoze";
 import { Campfire } from "./campfire";
 import { Game } from "./game";
 import { Ghost } from "./ghost";
@@ -35,10 +36,11 @@ export class ExMahcina {
     wizardDefeated = false;
     wizardBossSpotted = false;
 
-
-
     enableWeather = false;
     weatherCooldown = 0;
+
+    bigOozeSpotted = false;
+    obeliskSpotted = false;
 
     update(dt: number) {
         if (!this.mouseTutorial) {
@@ -185,14 +187,29 @@ export class ExMahcina {
             }
         }
 
-        if(this.enableWeather){
-            if(this.weatherCooldown > 0){
+        if (this.enableWeather) {
+            if (this.weatherCooldown > 0) {
                 this.weatherCooldown -= dt;
-            }else{
+            } else {
                 this.game.splash.lightning();
                 this.weatherCooldown = 100 + 500 * Math.random();
             }
         }
 
+        if (!this.bigOozeSpotted) {
+            const boss = this.game.bigOoze;
+            if (boss.position.distance(this.game.player.position) < 800) {
+                this.bigOozeSpotted = true;
+                this.game.soundManager.voiceline("14");
+            }
+        }
+
+        if (!this.obeliskSpotted) {
+            const boss = this.game.obelisk;
+            if (boss.position.distance(this.game.player.position) < 600) {
+                this.obeliskSpotted = true;
+                this.game.soundManager.voiceline("15");
+            }
+        }
     }
 }

@@ -88,7 +88,7 @@ export class Player {
         return nearest;
     }
 
-    allowDistance = 300;
+    allowDistance = 400;
     nodeCheckCooldown = 0;
     update(dt: number) {
         const controlVector = new Vector();
@@ -116,20 +116,25 @@ export class Player {
         }
 
         if (controlVector.lengthSquared() > 0) {
-            
-            if(this.game.keys["shift"]){
+            if (this.game.keys["shift"]) {
                 controlVector.normalize(this.speed * 10);
-                const nextPosition = this.position.result().add(controlVector.mult(dt));
+                const nextPosition = this.position.result().add(controlVector);
+                this.game.camera.moveTo(nextPosition, 10);
                 this.position.set(...nextPosition.xy());
-            }else{
-                controlVector.normalize(this.speed);
-                const nextPosition = this.position.result().add(controlVector.mult(dt));
-    
+            } else {
+                controlVector.normalize(this.speed * dt);
+                const nextPosition = this.position.result().add(controlVector);
+
                 const nearest = this.nearestNode();
-                if (!nearest || nearest.distanceSquared(nextPosition) < this.allowDistance ** 2) {
-                    this.position.set(...nextPosition.xy());
+                if (!nearest) {
+                } else {
+                    const nextposdist = nearest.distanceSquared(nextPosition);
+                    const currentdist = nearest.distanceSquared(this.position);
+                    if (nextposdist < this.allowDistance ** 2 || nextposdist < currentdist) {
+                        this.position.set(...nextPosition.xy());
+                    } 
                 }
-    
+
                 for (const wall of this.game.walls) {
                     const res = collision(wall, this);
                     if (res) {
@@ -138,7 +143,6 @@ export class Player {
                 }
                 this.walking++;
             }
-
         }
 
         this.walking *= 0.9;

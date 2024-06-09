@@ -16,6 +16,7 @@ export class BigOoze {
         this.sprite = new Sprite(Assets.get("bigOoze"));
         this.sprite.anchor.set(0.5);
         game.enemyContainer.addChild(this.sprite);
+        game.bigOoze = this;
     }
 
     ticker = 0;

@@ -16,6 +16,7 @@ import { Splash } from "./splash";
 import { ExMahcina as ExMachina } from "./exMachina";
 import { UIManager } from "./uiManager";
 import { Obelisk } from "./obelisk";
+import { BigOoze } from "./bigOoze";
 
 export class Game {
     keys: Record<string, boolean> = {};
@@ -56,6 +57,7 @@ export class Game {
     shadowGraphics!: Graphics;
     uiManager!: UIManager;
     obelisk!: Obelisk;
+    bigOoze!: BigOoze;
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
         app.ticker.add((time) => this.loop(time.deltaTime));
         this.app = app;
