@@ -132,8 +132,11 @@ export class Game {
         this.lightRenderTexture = RenderTexture.create({ width: this.app.canvas.width, height: this.app.canvas.height });
         this.shadowSprite.texture = this.lightRenderTexture;
         this.shadowGraphics.clear();
-        this.shadowGraphics.rect(0, 0, this.camera.size.x, this.camera.size.y);
+        this.shadowGraphics.rect(0, 0,  this.app.canvas.width,  this.app.canvas.height);
         this.shadowGraphics.fill({ color: 0x000000, alpha: 1 });
+        this.lightBaseDarkness.clear();
+        this.lightBaseDarkness.rect(0, 0, this.camera.size.x, this.camera.size.y);
+        this.lightBaseDarkness.fill({ color: 0xffffff, alpha: 1 });
         this.backdrop.width = this.app.canvas.width;
         this.backdrop.height = this.app.canvas.height;
     }

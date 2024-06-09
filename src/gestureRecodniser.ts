@@ -312,7 +312,27 @@ export class GestureRecodniser {
             const cycleA = Math.sin(this.game.timeManager.timeElapsed * 1 + index);
             const cycleB = Math.sin(this.game.timeManager.timeElapsed * 1.1 + index);
             const runePosition = this.runeToPosition(index);
-            this.graphics.ellipse(runePosition.x, runePosition.y, 0.3 * this.size + cycleA * 10, 0.3 * this.size - cycleB * 10);
+            let power = 0;
+            if (this.playedArray.includes(index)) {
+                power = 20;
+            }
+            let prev = Vector.fromAngle(0+ cycleA * 0.1 - 0.1)
+            .mult(0.3 * this.size  + power * cycleA)
+            .add(runePosition);
+            this.graphics.beginPath();
+            this.graphics.moveTo(prev.x, prev.y);
+
+            for (let segment = 0; segment < 6; segment++) {
+                const pos = Vector.fromAngle(((segment+1) / 6) * Math.PI * 2 + cycleA * 0.1 - 0.1) 
+                    .mult(0.3 * this.size + power * cycleA)
+                    .add(runePosition);
+                const midpoint = Vector.fromAngle(((segment+0.5) / 6) * Math.PI * 2 + cycleB * 0.1 - 0.1)
+                .mult(0.3 * this.size + power * cycleB)
+                .add(runePosition);
+                this.graphics.bezierCurveTo(midpoint.x, midpoint.y, midpoint.x, midpoint.y, pos.x, pos.y);
+                prev = pos.result();
+            }
+            this.graphics.closePath();
 
             let alpha = 0;
             if (this.playedArray.includes(index)) {
@@ -320,7 +340,7 @@ export class GestureRecodniser {
             }
 
             this.graphics.fill({ color: runeColorDictionary[rune.color], alpha: alpha });
-            this.graphics.stroke({ color: runeColorDictionary[rune.color], alpha: 0.75, width: 20 });
+            this.graphics.stroke({ color: runeColorDictionary[rune.color], alpha: 1, width: 5 });
 
             const playsound = () => {
                 this.game.soundManager.sound("spellTouch", 1, this.game.player.position, 0.7 + index * 0.1);
@@ -333,7 +353,6 @@ export class GestureRecodniser {
                     playsound();
                 } else {
                     const lastAdded = this.playedArray[this.playedArray.length - 1];
-
                     if (this.playedArray.length > 1) {
                         if (this.playedArray[0] == index) {
                             playsound();

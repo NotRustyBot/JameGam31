@@ -102,6 +102,7 @@ export class Splash {
         this.game.overlayContainer.addChild(graphics);
         const sprite = new Sprite(Assets.get("cardback"));
         sprite.anchor.set(0.5);
+        sprite.scale.set(0.5);
         sprite.position.set(this.game.camera.size.x / 2, -500);
         if (win) {
             sprite.position.set((this.game.camera.size.x / 4) * 3, -500);
@@ -122,7 +123,7 @@ export class Splash {
                     sprite.texture = Assets.get(card);
                 }
                 const r = (25 - rt) / 25;
-                sprite.scale.x = Math.abs(r);
+                sprite.scale.x = Math.abs(r)/2;
             }
 
             if (t > 250) {
@@ -228,11 +229,14 @@ export class Splash {
 
         const credits = [
             ["NotRustyBot", "Code"],
+            ["varidare", "Artwork"],
+            ["Tanmay Khelkar", "Artwork"],
             ["Andy Lin", "Music"],
-            ["B0tLAS", "Voice"],
-            ["Monkey435", "Playtesting"],
-            ["Omni", "Playtesting"],
             ["Jake Greenstein", "Sound Effects"],
+            ["B0tLAS", "Voice"],
+            ["Daniel Radcliffe", "Tester"],
+            ["Monkey435", "Tester"],
+            ["Omni", "Tester"],
         ];
 
         const names = credits.map((c) => c[0]).join("\n");
@@ -248,10 +252,10 @@ export class Splash {
             },
         });
 
-        namesText.anchor.set(0, 0.5);
+        namesText.anchor.set(0, 0);
 
         namesText.position.x = 310;
-        namesText.position.y = 200;
+        namesText.position.y = 50;
 
         const posText = new Text({
             text: positions,
@@ -262,9 +266,9 @@ export class Splash {
                 align: "right",
             },
         });
-        posText.anchor.set(1, 0.5);
+        posText.anchor.set(1, 0);
         posText.position.x = 300;
-        posText.position.y = 200;
+        posText.position.y = 50;
 
         namesText.alpha = 0;
         posText.alpha = 0;
@@ -286,13 +290,42 @@ export class Splash {
         lineup.position.x = window.innerWidth ;
         lineup.position.y = window.innerHeight;
         lineup.anchor.set(0, 1);
-        lineup.scale.set(-1, 1);
+        lineup.scale.set(-0.75, 0.75);
         lineup.alpha = 0;
 
+        const card1 =  new Sprite(Assets.get("card1"));
+        card1.position.x = window.innerWidth - 450;
+        card1.position.y = 400;
+        card1.scale.set(0.3);
+        card1.anchor.set(0.5, 1);
+        card1.rotation = -0.3
+        card1.alpha = 0;
+
+        const card2 =  new Sprite(Assets.get("card2"));
+        card2.position.x =window.innerWidth - 350;
+        card2.position.y = 400;
+        card2.scale.set(0.3);
+        card2.anchor.set(0.5, 1);
+        card2.alpha = 0;
+
+        const card3 =  new Sprite(Assets.get("card3"));
+        card3.position.x = window.innerWidth - 250;
+        card3.position.y = 400;
+        card3.scale.set(0.3);
+        card3.anchor.set(0.5, 1);
+        card3.rotation = 0.3
+        card3.alpha = 0;
+
+
+
+
+        this.game.overlayContainer.addChild(lineup);
         this.game.overlayContainer.addChild(namesText);
         this.game.overlayContainer.addChild(posText);
         this.game.overlayContainer.addChild(thanks);
-        this.game.overlayContainer.addChild(lineup);
+        this.game.overlayContainer.addChild(card1);
+        this.game.overlayContainer.addChild(card2);
+        this.game.overlayContainer.addChild(card3);
 
         let card = false;
 
@@ -301,7 +334,7 @@ export class Splash {
             this.game.soundManager.musicTarget = 0;
 
             if (!card && t > 250) {
-                this.card("card1", true);
+                this.card("card3", true);
                 this.game.soundManager.voiceline("18");
                 this.game.soundManager.voiceline("19");
                 card = true;
@@ -316,9 +349,19 @@ export class Splash {
                 lineup.alpha = (t - 1000) / 100;
             }
 
-            if (t > 1500 && t < 1600) {
-           
+            if (t > 1100 && t < 1200) {
+                card1.alpha = (t - 1100) / 100;
+            }
 
+            if (t > 1200 && t < 1300) {
+                card2.alpha = (t - 1200) / 100;
+            }
+
+            if (t > 1300 && t < 1400) {
+                card3.alpha = (t - 1300) / 100;
+            }
+
+            if (t > 1500 && t < 1600) {
                 thanks.alpha = (t - 1500) / 100;
             }
         };

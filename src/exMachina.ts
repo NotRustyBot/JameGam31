@@ -177,7 +177,7 @@ export class ExMahcina {
             const boss = this.game.tagged.get("wizardBoss") as Wizard;
             if (boss.health.length === 0) {
                 this.wizardDefeated = true;
-                this.game.splash.card("card1");
+                this.game.splash.card("card2");
                 this.game.soundManager.voiceline("11");
         }
         }
