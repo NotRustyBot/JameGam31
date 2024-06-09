@@ -126,6 +126,8 @@ export class Game {
         this.shadowGraphics.clear();
         this.shadowGraphics.rect(0, 0, this.camera.size.x, this.camera.size.y);
         this.shadowGraphics.fill({ color: 0x000000, alpha: 1 });
+        this.backdrop.width = this.app.canvas.width;
+        this.backdrop.height = this.app.canvas.height;
     }
 
     registerTagged(tagable: any, tag: string) {
