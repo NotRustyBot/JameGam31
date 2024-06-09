@@ -77,9 +77,7 @@
     { "template": { "name": "path", "image": "path" }, "position": { "x": 6266.749999999999, "y": 1581.9999999999995 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 6257.999999999999, "y": 1461.2499999999995 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 6201.999999999999, "y": 1277.4999999999995 } },
-    { "template": { "name": "ghost", "image": "ghost", "health": 2, "family": "greenCircles" }, "position": { "x": 5242.999999999999, "y": 2539.2499999999995 } },
     { "template": { "name": "ghost", "image": "ghost", "health": 2, "family": "greenCircles" }, "position": { "x": 5179.999999999999, "y": 2742.2499999999995 } },
-    { "template": { "name": "ghost", "image": "ghost", "health": 2, "family": "greenCircles" }, "position": { "x": 5407.499999999999, "y": 2775.4999999999995 } },
     { "template": { "name": "ghost", "image": "ghost", "health": 2, "family": "greenCircles" }, "position": { "x": 5451.249999999999, "y": 2595.2499999999995 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 6119.749999999999, "y": 1216.2499999999995 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 5983.249999999999, "y": 1160.2499999999995 } },
@@ -304,5 +302,6 @@
     { "template": { "name": "path", "image": "path" }, "position": { "x": 19736.199999999993, "y": 6599.049999999999 } },
     { "template": { "name": "totem", "image": "totem" }, "position": { "x": 19647.749999999993, "y": 6538.049999999999 } },
     { "template": { "name": "obelisk", "image": "obelisk" }, "position": { "x": 20785.399999999994, "y": 5568.15 } },
-    { "template": { "name": "bigOoze", "image": "bigOoze" }, "position": { "x": 20230, "y": 6095 } }
+    { "template": { "name": "bigOoze", "image": "bigOoze" }, "position": { "x": 20230, "y": 6095 } },
+    { "template": { "name": "ghost", "image": "ghost", "health": 4, "family": "greenCircles" }, "position": { "x": 5871.699999999999, "y": 2491.6000000000004 } }
 ]
