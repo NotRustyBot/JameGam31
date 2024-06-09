@@ -30,6 +30,9 @@ const loader: Record<string, (game: Game, data: ObjectTemplateData) => void> = {
         enemy.randomHealth(family);
         enemy.position.set(data.position.x, data.position.y);
         if (data.template.tag !== "") game.registerTagged(enemy, data.template.tag);
+        if(data.template.tag === "wizardBoss"){
+            enemy.boss();
+        }
 
     },
     ["ghost"]: (game, data) => {

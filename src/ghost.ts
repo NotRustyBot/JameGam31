@@ -29,7 +29,7 @@ export class Ghost extends EnemyBase {
         if (ratio > 0.2) ratio = 1;
         this.sprite.alpha = 1 - ratio * 0.2;
         if (distance > maxDistance) {
-            this.cooldown = this.maxCooldown;
+            this.cooldown = 0;
         } else {
             this.game.soundManager.danger += 0.025;
             this.cooldown -= dt;

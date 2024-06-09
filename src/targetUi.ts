@@ -26,8 +26,11 @@ export class TargetUI {
             child.destroy();
         });
         this.healthBg = new Sprite(Assets.get("healthBg"));
+        //only last 6
+        count = Math.min(6, count);
         this.healthBg.scale.set((0.5 * count) / 6, 0.5);
         this.healthBg.anchor.set(0.5);
+        runes = runes.slice(Math.max(runes.length - 6, 0));
         this.container.addChild(this.healthBg);
         for (let index = 0; index < runes.length; index++) {
             const element = runes[index];

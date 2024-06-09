@@ -5,6 +5,7 @@ import { Vector } from "./types";
 export class PathManager {
     game: Game;
     nodes: Vector[] = [];
+    allNodes: Vector[] = [];
     grapics: Graphics;
     constructor(game: Game) {
         this.game = game;
@@ -13,6 +14,7 @@ export class PathManager {
 
     addPathNode(position: Vector) {
         this.nodes.push(position);
+        this.allNodes.push(position);
     }
 
     render() {

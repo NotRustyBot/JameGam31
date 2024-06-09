@@ -2,14 +2,16 @@ import { Game } from "./game";
 import { Howl } from "howler";
 
 import textLines from "./linesText.json";
+import { Vector } from "./types";
 
 export class SoundManager {
     musicTracks: Record<string, MusicTrack> = {};
+    ambientTracks: Record<string, { howl: Howl; level: number }> = {};
     game: Game;
     danger = 0;
     masterVolume = 0.3;
     music = 1;
-    musicTarget = 0;
+    musicTarget = 1;
     constructor(game: Game) {
         this.game = game;
 
@@ -37,6 +39,26 @@ export class SoundManager {
             }),
         };
 
+        this.ambientTracks["spell"] = {
+            howl: new Howl({
+                src: ["sounds/spellSustain.wav"],
+                autoplay: true,
+                loop: true,
+                volume: 0,
+            }),
+            level: 0,
+        };
+
+        this.ambientTracks["campfire"] = {
+            howl: new Howl({
+                src: ["sounds/campfireLoop.wav"],
+                autoplay: true,
+                loop: true,
+                volume: 0,
+            }),
+            level: 0,
+        };
+
         this.musicTracks["combat"].howlA.play();
     }
 
@@ -58,6 +80,16 @@ export class SoundManager {
             combat.howlA.seek(0);
         }
 
+        for (const trackName in this.ambientTracks) {
+            const track = this.ambientTracks[trackName];
+            let currentVolume = track.howl.volume();
+            track.level *= this.masterVolume;
+            currentVolume = currentVolume * 0.9 + track.level * 0.1;
+
+            track.howl.volume(currentVolume);
+            track.level = 0;
+        }
+
         this.music = this.music * 0.99 + this.musicTarget * 0.01;
 
         exploration.howlA.volume(this.masterVolume * this.music);
@@ -68,7 +100,8 @@ export class SoundManager {
 
         if (this.danger > 0.5) {
             this.combatVolume += 0.01 * dt;
-        } else {
+        }
+        if (this.danger < 0.2) {
             this.combatVolume -= 0.005 * dt;
         }
 
@@ -96,6 +129,26 @@ export class SoundManager {
                 this.voiceline(this.voiceQueue.shift()!);
             }
         });
+    }
+
+    sound(name: string, volume = 1, position?: Vector) {
+        const howl = new Howl({ src: [`sounds/${name}.wav`] });
+        howl.volume(volume * this.masterVolume);
+        
+        howl.play();
+        if (position) {
+            const h = (dt: number) => {
+                //calculate pan
+                let pan = position.x - this.game.player.position.x;
+                pan /= this.game.camera.size.x / 2;
+                pan = Math.max(-1, Math.min(1, pan));
+                howl.pos(pan);
+            };
+            this.game.splash.happenings.add(h);
+            howl.once("end", () => {
+                this.game.splash.happenings.delete(h);
+            });
+        }
     }
 }
 

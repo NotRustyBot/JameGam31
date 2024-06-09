@@ -4,12 +4,28 @@ import { Game } from "./game";
 import { Vector } from "./types";
 import bundle from "./bundle.json";
 import { loadLevel } from "./levelLoader";
+const text = new Text("Loading graphics", { fill: 0xffffff });
+
 (async () => {
     const app = new Application();
+    const game = new Game();
 
-    await app.init({ background: "#334433", resizeTo: window });
+    const PermanentMarker = new FontFace("PermanentMarker", "url('PermanentMarker-Regular.ttf')");
+    await PermanentMarker.load();
+    document.fonts.add(PermanentMarker);
+
+
+    text.style.fontFamily = "PermanentMarker";
+
+    window.addEventListener("resize", () => {
+        console.log("resize");
+        
+        game.resize();
+        text.position.set(app.screen.width / 2, app.screen.height - 200);
+    });
+
+    await app.init({ background: "#334433", resizeTo: window, antialias: true });
     document.body.appendChild(app.canvas);
-    const text = new Text("Loading graphics", { fill: 0xffffff });
     app.stage.addChild(text);
     text.anchor.set(0.5);
     text.position.set(app.screen.width / 2, app.screen.height - 200);
@@ -40,6 +56,19 @@ import { loadLevel } from "./levelLoader";
         "sounds/voice/17.wav",
         "sounds/voice/18.wav",
         "sounds/voice/19.wav",
+
+        "sounds/campfireLoop.wav",
+        "sounds/damage.wav",
+        "sounds/fireballHit.wav",
+        "sounds/ghostDies.wav",
+        "sounds/impact.wav",
+        "sounds/missileCast.wav",
+        "sounds/missileHit.wav",
+        "sounds/oozeDies.wav",
+        "sounds/spellCast.wav",
+        "sounds/spellFail.wav",
+        "sounds/spellSustain.wav",
+        "sounds/spellTouch.wav",
     ];
 
     const promises = [];
@@ -62,7 +91,6 @@ import { loadLevel } from "./levelLoader";
         position: new Vector(),
         down: false,
     };
-    const game = new Game();
 
     document.addEventListener("keydown", (e) => {
         keys[e.key.toLowerCase()] = true;
@@ -93,7 +121,7 @@ import { loadLevel } from "./levelLoader";
         });
     });
 
-    text.destroy();
+    text.visible = false;
 
     game.init(app, keys, mouse);
     loadLevel(game);

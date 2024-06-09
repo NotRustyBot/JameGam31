@@ -42,6 +42,10 @@ export class Totem implements ITargetable {
     particleCooldown = 0;
 
     update(dt: number) {
+        if(this.loadedSymbol && this.game.player.position.distanceSquared(this.position) < this.areaRange ** 2) {
+            this.game.soundManager.ambientTracks["spell"].level += 0.5; 
+        }
+
         if (this.loadedSymbol != undefined) {
             for (const enemy of this.game.enemies) {
                 if (enemy.position.distanceSquared(this.position) < this.areaRange ** 2) {

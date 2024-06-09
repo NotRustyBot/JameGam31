@@ -64,7 +64,17 @@ export class RedDust implements ITargetable {
         if (rune.color === RuneColor.red && rune.symbol === RuneSymbol.star && this.ready) {
             if (this == this.game.player.target) this.game.player.target = undefined;
             this.game.player.unregisterTarget(this);
+            let timeout = 0;
+            const h = (dt: number) => {
+                timeout += dt;
+                this.game.soundManager.danger++;
+                if (timeout > 500) {
 
+                    this.game.splash.happenings.delete(h);
+                }
+            };
+
+            this.game.splash.happenings.add(h);
             for (let i = 0; i < 5; i++) {
                 const position = new Vector(this.position.x, this.position.y).add(Vector.fromAngle((i * Math.PI * 2) / 5).mult(250 + 100 * i));
                 this.game.splash.incoming(position, 200 + 100 * i);

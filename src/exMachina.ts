@@ -30,6 +30,7 @@ export class ExMahcina {
     campfireSpotted = false;
 
     update(dt: number) {
+        return;
         if (!this.mouseTutorial) {
             this.game.timeManager.schedule(100, () => this.game.splash.tutorial("tutorial_mouse", 500));
             this.game.timeManager.schedule(100, () => this.game.soundManager.voiceline("1"));
@@ -84,7 +85,7 @@ export class ExMahcina {
             if (ghost.position.distance(this.game.player.position) < 900) {
                 this.ghostMet = true;
                 this.game.player.target = ghost;
-                this.game.splash.tutorial("tutorial_combat", 500);
+                this.game.splash.tutorial("tutorial_combat", 500, 0.1);
                 this.game.soundManager.voiceline("4");
             }
         }
@@ -119,7 +120,7 @@ export class ExMahcina {
             for (const spell of this.game.spells) {
                 if (spell instanceof MagicMissile) {
                     this.missileTutorial = true;
-                    this.game.splash.tutorial("tutorial_missile", 500);
+                    this.game.splash.tutorial("tutorial_missile", 500, 0.01);
                     break;
                 }
             }

@@ -2,7 +2,7 @@ import { AnimatedSprite, Assets, Container, Sprite, Texture } from "pixi.js";
 import { Game } from "./game";
 import { ITargetable } from "./targetable";
 import { Vector } from "./types";
-import { RuneColor, RuneSymbol, RuneType } from "./gestureRecodniser";
+import { RuneColor, RuneSymbol, RuneType, runeColorDictionary } from "./gestureRecodniser";
 import { OutlineFilter } from "pixi-filters";
 
 export class Campfire implements ITargetable {
@@ -14,7 +14,7 @@ export class Campfire implements ITargetable {
     range: number = 100;
     game: Game;
     lit = false;
-    healingArea = 200;
+    healingArea = 400;
 
     constructor(game: Game) {
         this.spriteBurning = new AnimatedSprite([
@@ -67,16 +67,25 @@ export class Campfire implements ITargetable {
 
     update(dt: number) {
         if (this.lit) {
+            if (this.game.player.position.distanceSquared(this.position) < 900 ** 2) {
+                this.game.soundManager.ambientTracks["campfire"].level = 3;
+            }
+
             if (this.game.player.position.distanceSquared(this.position) < this.healingArea ** 2) {
-                let safe =true;
+                let safe = true;
                 for (const enemy of this.game.enemies) {
                     if (enemy.position.distanceSquared(this.position) < 900 ** 2) {
                         safe = false;
                     }
                 }
 
-                if (safe) {
+                if (safe && this.game.player.health < 5) {
                     this.game.player.health = 5;
+        this.game.uiManager.updateHealth(5);
+
+                    for (let index = 0; index < 10; index++) {
+                        this.game.splash.magicSpark(this.game.player.position.result(), 0x55ff55, Vector.fromAngle((index / 10) * Math.PI * 2).mult(15), "buff", 0, 0, 0.2);
+                    }
                 }
             }
             this.spriteBurning.visible = true;

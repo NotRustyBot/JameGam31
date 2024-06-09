@@ -1,28 +1,53 @@
-import { Assets, Container, Sprite } from "pixi.js";
+import { Assets, Container, MeshRope, Point, Sprite } from "pixi.js";
 import { Game } from "./game";
 import { HostileSpell } from "./hostileSpell";
 import { EnemyBase } from "./enemyBase";
+import { SlimeBall } from "./slimeball";
+import { Vector } from "./types";
 
 export class Slime extends EnemyBase {
     constructor(game: Game) {
         super(game);
-        this.sprite = new Sprite(Assets.get("marker"));
-        this.sprite.tint = 0x55ff55;
-        this.sprite.anchor.set(0.5);
+
+        this.sprite = new Sprite({
+            texture: Assets.get("slime1"),
+        });
+        this.sprite.scale.set(0.5);
+        this.sprite.anchor.set(0.5, 1);
         game.enemyContainer.addChild(this.sprite);
     }
-
 
     speed = 2;
 
     cooldown = 100;
-    maxCooldown = 20;
+    maxCooldown = 200;
+
+    override death(): void {
+        let time = 0;
+        this.game.player.unregisterTarget(this);
+        const length = 50;
+        const h = (dt: number) => {
+            time += dt;
+            const ratio = time / length;
+            this.sprite.alpha = 1 - ratio;
+            this.sprite.scale.y = 0.5 - (ratio ** 0.5) * 0.25;
+            if (time > length) {
+                this.game.splash.happenings.delete(h);
+                this.remove();
+            }
+        };
+
+        this.game.splash.happenings.add(h);
+    }
 
     update(dt: number) {
+        if(this.health.length === 0) return;
         const player = this.game.player;
 
-        const prefferedDistance = 420;
-        const maxDistance = 600;
+        const prefferedDistance = 100;
+        const maxDistance = 900;
+
+        const cycle = Math.sin(this.game.timeManager.timeElapsed * 0.1);
 
         let distance = this.position.distance(player.position);
         let ratio = this.cooldown / this.maxCooldown;
@@ -34,16 +59,30 @@ export class Slime extends EnemyBase {
             this.game.soundManager.danger++;
             this.cooldown -= dt;
 
+            let useSpeed = this.speed;
+            if (this.cooldown < 100) {
+                useSpeed = (this.cooldown / 100) * this.speed;
+            }
+
             let strength = Math.min(Math.max(distance - prefferedDistance, -100), 100) / 100;
 
             const diff = this.position.diff(player.position);
             if (this.cooldown < 0) {
                 this.cooldown = this.maxCooldown;
-                const spell = new HostileSpell(this.game);
-                spell.position.set(...this.position.xy());
-                spell.velocity = diff.result().normalize(-10);
+                for (let index = 0; index < 3; index++) {
+                    const spell = new SlimeBall(this.game);
+                    spell.position.set(...this.position.result().add({ x: 0, y: -100 }).xy());
+                    const projDiff = spell.position.diff(player.position);
+
+                    let angle = projDiff.toAngle();
+                    spell.velocity = Vector.fromAngle(angle + (index - 1) * 0.5).normalize(-3);
+                }
             }
-            this.position.add(diff.normalize(-strength * this.speed * dt));
+
+            const dir = diff.normalize(-strength * useSpeed);
+            this.sprite.skew.x = -dir.x * 0.1 * Math.abs(cycle);
+            this.sprite.scale.y = dir.length() * Math.abs(cycle) * 0.1 + 0.5;
+            this.position.add(dir.mult(dt));
 
             for (const enemy of this.game.enemies) {
                 if (enemy == this) continue;

@@ -14,6 +14,7 @@ import { EnemyBase } from "./enemyBase";
 import { TimeManager } from "./timeManager";
 import { Splash } from "./splash";
 import { ExMahcina as ExMachina } from "./exMachina";
+import { UIManager } from "./uiManager";
 
 export class Game {
     keys: Record<string, boolean> = {};
@@ -30,6 +31,7 @@ export class Game {
     poiContainer = new Container();
     overlayContainer = new Container();
     glowContainer = new Container();
+    uiContainer = new Container();
     gestureRecodiniser!: GestureRecodniser;
     soundManager!: SoundManager;
     pathManager!: PathManager;
@@ -51,6 +53,7 @@ export class Game {
     lightRenderTexture: any;
     lightBaseDarkness!: Graphics;
     shadowGraphics!: Graphics;
+    uiManager!: UIManager;
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
         app.ticker.add((time) => this.loop(time.deltaTime));
         this.app = app;
@@ -67,11 +70,12 @@ export class Game {
         app.stage.addChild(this.gestureContainer);
         this.lightRenderTexture = RenderTexture.create({ width: app.canvas.width, height: app.canvas.height });
         this.shadowSprite = new Sprite(this.lightRenderTexture);
-        
+
         this.shadowGraphics = new Graphics();
         this.shadowGraphics.rect(0, 0, this.camera.size.x, this.camera.size.y);
         this.shadowGraphics.fill({ color: 0x000000, alpha: 1 });
         this.shadowGraphics.mask = this.shadowSprite;
+        app.stage.addChild(this.uiContainer);
         app.stage.addChild(this.overlayContainer);
         this.worldContainer.addChild(this.pathContainer);
         this.worldContainer.addChild(this.poiContainer);
@@ -87,12 +91,24 @@ export class Game {
         this.timeManager = new TimeManager();
         this.splash = new Splash(this);
         this.exMachina = new ExMachina(this);
+        this.uiManager = new UIManager(this);
 
-        this.shadowGraphics.alpha = 0
-
+        this.shadowGraphics.alpha = 0;
 
         app.stage.addChild(this.debugText);
+        this.debugText.y = 100;
 
+       this.player.position.x = 15000;
+       this.player.position.y = 5000;
+    }
+
+    resize() {
+        if (!this.app) return;
+        this.lightRenderTexture = RenderTexture.create({ width: this.app.canvas.width, height: this.app.canvas.height });
+        this.shadowSprite.texture = this.lightRenderTexture;
+        this.shadowGraphics.clear();
+        this.shadowGraphics.rect(0, 0, this.camera.size.x, this.camera.size.y);
+        this.shadowGraphics.fill({ color: 0x000000, alpha: 1 });
     }
 
     registerTagged(tagable: any, tag: string) {
@@ -106,7 +122,7 @@ export class Game {
     debugText = new Text("", {
         fill: 0xffffff,
         fontSize: 20,
-        fontFamily: "Arial",
+        fontFamily: "PermanentMarker",
     });
 
     loop(dt: number) {
@@ -145,10 +161,16 @@ export class Game {
             target: this.lightRenderTexture,
         });
 
-        this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(2)}\nHealth: ${this.player.health}\nMusic: ${this.soundManager.music.toFixed(2)}\nDanger: ${this.soundManager.danger.toFixed(2)} -> ${this.soundManager.combatVolume.toFixed(2)}`;
+        this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(2)}\nHealth: ${this.player.health}\nMusic: ${this.soundManager.music.toFixed(
+            2
+        )}\nDanger: ${this.soundManager.danger.toFixed(2)} -> ${this.soundManager.combatVolume.toFixed(2)}`;
     }
 
     mouseWorldPosition(): Vector {
         return this.mouse.position.result().add(this.camera.position);
     }
+}
+
+export function getRandom<T>(arry: T[]): T {
+    return arry[Math.floor(Math.random() * arry.length)];
 }

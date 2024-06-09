@@ -53,6 +53,9 @@
 
     "redDust": "redDust.png",
 
+
+    "slime1": "slime1.png",
+
     "tutorial_mouse": "tutorial/mouse.png",
     "tutorial_redTriangle": "tutorial/redTriangle.png",
     "tutorial_combat": "tutorial/combat.png",
@@ -61,5 +64,11 @@
 
 
     "mainProfile": "mainProfile.png",
-    "bubble": "bubble.png"
+    "bubble": "bubble.png",
+    
+    "buff": "buff.png",
+    "playerHp": "playerHp.png",
+    "hpBar": "hpBar.png",
+    "wizardBoss": "wizardBoss.png"
+    
 }

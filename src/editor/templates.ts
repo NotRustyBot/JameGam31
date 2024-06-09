@@ -14,6 +14,7 @@ export const templates: ObjectTemplateData[] = [
         image: "wizard",
         health: 4,
         family: "default",
+        scale: 0.5
     },
     {
         name: "ghost",

@@ -5,6 +5,8 @@ import { Wizard } from "./wizard";
 import { ITargetable } from "./targetable";
 import { PlayState, RuneType } from "./gestureRecodniser";
 import { collision } from "./collision";
+import { mouse } from "./editor/editorRun";
+import { TimeManager } from "./timeManager";
 
 export class Player {
     position: Vector = new Vector();
@@ -22,9 +24,12 @@ export class Player {
 
     targetInRange = false;
 
+    nearNodes = new Set<Vector>();
+
     constructor(game: Game) {
         this.game = game;
-        this.sprite = new Sprite(Assets.get("marker"));
+        this.sprite = new Sprite(Assets.get("mainProfile"));
+        this.sprite.scale.set(0.5);
         this.sprite.anchor.set(0.5);
         game.playerContainer.addChild(this.sprite);
         game.camera.follow(this);
@@ -42,7 +47,7 @@ export class Player {
 
     unregisterTarget(target: ITargetable) {
         this.potentialTargets.delete(target);
-        if(target === this.target) {
+        if (target === this.target) {
             this.target = undefined;
         }
     }
@@ -54,8 +59,37 @@ export class Player {
 
     hit() {
         this.health--;
+        this.game.uiManager.updateHealth(this.health);
+        this.game.soundManager.sound("damage", 0.5, this.position);
     }
 
+    walking = 0;
+
+    fetchNodes() {
+        this.nearNodes = new Set();
+        for (const node of this.game.pathManager.allNodes) {
+            if (node.distance(this.position) < 1000) {
+                this.nearNodes.add(node);
+            }
+        }
+    }
+
+    nearestNode() {
+        let dist = Infinity;
+        let nearest = null;
+        for (const node of this.nearNodes) {
+            const currentDist = node.distance(this.position);
+            if (currentDist == 0) continue;
+            if (currentDist < dist) {
+                dist = currentDist;
+                nearest = node;
+            }
+        }
+        return nearest;
+    }
+
+    allowDistance = 600;
+    nodeCheckCooldown = 0;
     update(dt: number) {
         const controlVector = new Vector();
         if (this.game.keys["a"]) {
@@ -74,17 +108,38 @@ export class Player {
             controlVector.y = 1;
         }
 
+        if (this.nodeCheckCooldown > 0) {
+            this.nodeCheckCooldown -= dt;
+        } else {
+            this.fetchNodes();
+            this.nodeCheckCooldown = 10;
+        }
+
         if (controlVector.lengthSquared() > 0) {
             controlVector.normalize(this.speed);
-            this.position.add(controlVector.mult(dt));
+            const nextPosition = this.position.result().add(controlVector.mult(dt));
+
+            const nearest = this.nearestNode();
+            if (!nearest || nearest.distanceSquared(nextPosition) < this.allowDistance ** 2) {
+                this.position.set(...nextPosition.xy());
+            }
 
             for (const wall of this.game.walls) {
                 const res = collision(wall, this);
                 if (res) {
-                   this.position.add(res);
+                    this.position.add(res);
                 }
             }
+            this.walking++;
         }
+
+        this.walking *= 0.9;
+        if (this.walking < 0.1) {
+            this.walking = 0;
+        }
+
+        this.walking = Math.min(this.walking, 1);
+        this.sprite.rotation = Math.sin(this.game.timeManager.timeElapsed * 0.3) * this.walking * 0.1;
 
         if (this.game.gestureRecodiniser.playState != PlayState.playing) {
             for (const target of this.potentialTargets) {
@@ -102,8 +157,8 @@ export class Player {
             this.targetInRange = true;
         }
 
-        if(this.game.gestureRecodiniser.playState == PlayState.idle && this.preparedRune != undefined){
-            if(this.targetInRange){
+        if (this.game.gestureRecodiniser.playState == PlayState.idle && this.preparedRune != undefined) {
+            if (this.targetInRange) {
                 this.target?.onSpell(this.preparedRune);
             }
             this.preparedRune = undefined;

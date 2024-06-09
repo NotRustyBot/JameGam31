@@ -25,13 +25,13 @@ export class Splash {
         this.happenings.add(h);
     }
 
-    tutorial(graphic: string, time: number) {
+    tutorial(graphic: string, time: number, slow = 0.5) {
         const sprite = new Sprite(Assets.get(graphic));
         sprite.anchor.set(1, 0);
-        sprite.x = this.game.camera.size.x;
         this.game.overlayContainer.addChild(sprite);
         let elapsed = 0;
         const h = (dt: number) => {
+            sprite.x = this.game.camera.size.x;
             elapsed += dt;
 
             if (elapsed < 30) {
@@ -46,7 +46,7 @@ export class Splash {
                 this.happenings.delete(h);
                 sprite.destroy();
             }
-            this.game.timeManager.requestRate(0.03);
+            this.game.timeManager.requestRate(slow);
         };
         this.happenings.add(h);
     }
@@ -55,7 +55,7 @@ export class Splash {
         const container = new Container();
         const mainSprite = new Sprite(Assets.get("mainProfile"));
         const bubble = new Sprite(Assets.get("bubble"));
-        const textSprie = new Text({ text: "", style: { fontSize: 25, fill: 0x000000, wordWrap: true, wordWrapWidth: bubble.width - 130 } });
+        const textSprie = new Text({ text: "", style: { fontSize: 25, fill: 0x000000, wordWrap: true, wordWrapWidth: bubble.width - 130, fontFamily: "PermanentMarker" } });
         textSprie.x = -bubble.width / 2 + 110;
         textSprie.y = -80;
         bubble.anchor.set(0.5);
@@ -67,6 +67,8 @@ export class Splash {
         container.position.y = this.game.camera.size.y + 500;
         let elapsed = 0;
         const h = (dt: number) => {
+            container.position.x = this.game.camera.size.x / 2;
+
             const ratio = elapsed / (time - 100);
             const substring = text.substring(0, Math.floor(text.length * ratio));
             textSprie.text = substring;
@@ -135,11 +137,11 @@ export class Splash {
         this.happenings.add(h);
     }
 
-    magicSpark(position: Vector, color: number, velocity: Vector, texture = "marker") {
+    magicSpark(position: Vector, color: number, velocity: Vector, texture = "marker", chaos = 2, rotation = Math.PI * 2, scale = 0.5) {
         const sprite = new Sprite(Assets.get(texture));
-        sprite.rotation = Math.random() * Math.PI * 2;
+        sprite.rotation = Math.random() *rotation;
         sprite.tint = color;
-        sprite.scale.set(0.5);
+        sprite.scale.set(scale);
         sprite.anchor.set(0.5);
         this.game.particlesContainer.addChild(sprite);
 
@@ -149,7 +151,7 @@ export class Splash {
             const gtd = dt * this.game.timeManager.gameRate;
             life -= gtd;
             position.add(velocity.result().mult(gtd));
-            velocity.add(new Vector(Math.random() - 0.5, Math.random() - 0.5).mult(gtd).mult(2));
+            velocity.add(new Vector(Math.random() - 0.5, Math.random() - 0.5).mult(gtd).mult(chaos));
             velocity.mult(0.95);
             sprite.position.set(...position.xy());
             sprite.alpha = ((life / 30) * 0.5 + 0.5) * 0.3;
@@ -165,12 +167,12 @@ export class Splash {
     incoming(vector: Vector, time: number) {
         let spawnCooldown = 0;
         const h = (dt: number) => {
-            time -= dt;
+            time -= dt * this.game.timeManager.gameRate;
 
             spawnCooldown += dt * this.game.timeManager.gameRate;
             while (spawnCooldown > 0) {
                 spawnCooldown--;
-                this.magicSpark(vector.result(),  0xff5555, new Vector(0, 1));
+                this.magicSpark(vector.result(), 0xff5555, new Vector(0, 1));
             }
 
             if (time < 0) {
