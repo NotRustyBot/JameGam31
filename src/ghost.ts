@@ -27,7 +27,27 @@ export class Ghost extends EnemyBase {
     cooldown = 0;
     maxCooldown = 40;
 
+     override death(): void {
+        this.game.soundManager.sound("ghostDies", 0.25, this.position);
+        let time = 0;
+        this.game.player.unregisterTarget(this);
+        const length = 50;
+        const h = (dt: number) => {
+            time += dt;
+            const ratio = time / length;
+            this.sprite.alpha = 1 - ratio;
+            if (time > length) {
+                this.game.splash.happenings.delete(h);
+                this.remove();
+            }
+        }    
+
+        this.game.splash.happenings.add(h);
+    }
+
     update(dt: number) {
+
+        if(this.health.length == 0) return;
         const player = this.game.player;
 
         const prefferedDistance = 10;

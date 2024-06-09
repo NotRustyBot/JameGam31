@@ -75,8 +75,11 @@ export class Wizard extends EnemyBase {
                     let spell;
                     if (this.type == 0) {
                         spell = new HostileSpell(this.game);
+                        this.game.soundManager.sound("fireballCast", 0.1, this.position);
                     } else {
                         spell = new MagicMissile(this.game);
+                        this.game.soundManager.sound("missileCast", 0.1, this.position);
+
                         this.cooldown = this.maxCooldown * 2;
                     }
                     spell.position.set(...this.position.xy());
@@ -89,9 +92,11 @@ export class Wizard extends EnemyBase {
 
                     if (this.ticker % 2 == 0) {
                         let spell = new HostileSpell(this.game);
+                        this.game.soundManager.sound("fireballCast", 0.1, this.position);
                         spell.position.set(...this.position.xy());
                         spell.velocity = diff.result().normalize(-10);
                     } else if (this.ticker == 1) {
+                        this.game.soundManager.sound("fireballCast", 0.1, this.position);
                         for (let index = 0; index < 5; index++) {
                             let spell = new HostileSpell(this.game);
                             spell.position.set(...this.position.xy());
@@ -108,6 +113,8 @@ export class Wizard extends EnemyBase {
                         });
                     } else {
                         let spell = new MagicMissile(this.game);
+                        this.game.soundManager.sound("missileCast", 0.1, this.position);
+
                         spell.position.set(...this.position.xy());
                         spell.velocity = diff.result().normalize(10);
                     }
@@ -122,7 +129,7 @@ export class Wizard extends EnemyBase {
 
                 const diff = this.position.diff(enemy.position);
                 if (diff.length() < 300) {
-                    this.position.add(diff.normalize(300/diff.length() * 0.1));
+                    this.position.add(diff.normalize((300 / diff.length()) * 0.1));
                 }
             }
         }

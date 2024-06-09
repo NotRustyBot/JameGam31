@@ -177,7 +177,7 @@ export class ExMahcina {
                 this.wizardDefeated = true;
                 this.game.splash.card("card1");
                 this.game.soundManager.voiceline("11");
-            }
+        }
         }
 
         if (!this.lastCharge) {
@@ -188,6 +188,9 @@ export class ExMahcina {
         }
 
         if (this.enableWeather) {
+            this.game.soundManager.ambientTracks["rain"].level = Math.max(this.game.soundManager.ambientTracks["rain"].level, (1000 / (this.weatherCooldown + 1) - 1) * 2);
+            this.game.soundManager.ambientTracks["rain"].level = Math.min(this.game.soundManager.ambientTracks["rain"].level, 2);
+            
             if (this.weatherCooldown > 0) {
                 this.weatherCooldown -= dt;
             } else {

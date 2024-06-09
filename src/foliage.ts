@@ -50,7 +50,8 @@ export class Foliage {
 
     update(dt: number) {
         if (this.game.camera.position.distanceSquared(this.position) < (this.game.camera.size.x + 600) ** 2) {
-            this.sprite.skew.x = Math.sin((this.game.timeManager.timeElapsed + this.position.x) * 0.05) * this.windability + this.windability/2;
+            const useWindability = this.windability * (this.game.exMachina.enableWeather ? 1.5 : 1);
+            this.sprite.skew.x = Math.sin((this.game.timeManager.timeElapsed + this.position.x) * 0.05) * useWindability + useWindability / 2;
             this.sprite.visible = true;
         } else {
             this.sprite.visible = false;

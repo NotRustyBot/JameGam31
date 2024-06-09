@@ -13,6 +13,7 @@ export class MagicMissile extends HostileSpell implements ITargetable {
         game.player.registerTarget(this);
         this.sprite.tint = 0x9999ff;
         this.life = 200;
+
     }
 
     override remove(): void {
@@ -22,6 +23,7 @@ export class MagicMissile extends HostileSpell implements ITargetable {
 
     onSpell(rune: RuneType): void {
         if (areRuneTypesEqual(rune, this.missileRune)) {
+            this.game.soundManager.sound("spellFail", 0.23, this.position);
             this.remove();
         }
     }

@@ -59,6 +59,16 @@ export class SoundManager {
             level: 0,
         };
 
+        this.ambientTracks["rain"] = {
+            howl: new Howl({
+                src: ["sounds/rainLoop.wav"],
+                autoplay: true,
+                loop: true,
+                volume: 0,
+            }),
+            level: 0,
+        };
+
         this.musicTracks["combat"].howlA.play();
     }
 

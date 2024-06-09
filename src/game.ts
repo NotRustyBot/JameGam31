@@ -63,7 +63,7 @@ export class Game {
     bigOoze!: BigOoze;
 
     backdrop!: TilingSprite;
-    foliage = new Set<Foliage>;
+    foliage = new Set<Foliage>();
     init(app: Application, keys: Record<string, boolean>, mouse: Mouse) {
         app.ticker.add((time) => this.loop(time.deltaTime));
         this.app = app;
@@ -122,7 +122,6 @@ export class Game {
 
         app.stage.addChild(this.debugText);
         this.debugText.y = 100;
-
     }
 
     resize() {
@@ -202,7 +201,9 @@ export class Game {
 
         this.debugText.text = `Game Rate: ${this.timeManager.gameRate.toFixed(2)}\nHealth: ${this.player.health}\nMusic: ${this.soundManager.music.toFixed(
             2
-        )}\nDanger: ${this.soundManager.danger.toFixed(2)} -> ${this.soundManager.combatVolume.toFixed(2)}\nWeather: ${this.exMachina.weatherCooldown.toFixed(0)}`;
+        )}\nDanger: ${this.soundManager.danger.toFixed(2)} -> ${this.soundManager.combatVolume.toFixed(2)}\nWeather: ${this.exMachina.weatherCooldown.toFixed(
+            0
+        )}\nRain: ${this.soundManager.ambientTracks["rain"].level.toFixed(2)}`;
     }
 
     mouseWorldPosition(): Vector {

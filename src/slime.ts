@@ -23,6 +23,7 @@ export class Slime extends EnemyBase {
     maxCooldown = 200;
 
     override death(): void {
+        this.game.soundManager.sound("oozeDies", 0.5, this.position);
         let time = 0;
         this.game.player.unregisterTarget(this);
         const length = 50;
@@ -69,6 +70,8 @@ export class Slime extends EnemyBase {
             const diff = this.position.diff(player.position);
             if (this.cooldown < 0) {
                 this.cooldown = this.maxCooldown;
+                this.game.soundManager.sound("oozeDies", 0.25, this.position);
+
                 for (let index = 0; index < 3; index++) {
                     const spell = new SlimeBall(this.game);
                     spell.position.set(...this.position.result().add({ x: 0, y: -100 }).xy());

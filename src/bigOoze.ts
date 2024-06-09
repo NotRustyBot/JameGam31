@@ -79,6 +79,7 @@ export class BigOoze {
             if (this.fullAutoCooldown < 0) {
                 this.fullAutoCooldown = 12;
                 this.fullAuto -= 0.1;
+                this.game.soundManager.sound("oozeDies", 0.1, this.position);
 
                 for (let index = 0; index < 4; index++) {
                     let spell = new SlimeBall(this.game);

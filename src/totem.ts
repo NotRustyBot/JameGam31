@@ -11,6 +11,7 @@ export class Totem implements ITargetable {
     range = 100;
     game: Game;
     sprite: Sprite;
+    glow: Sprite;
     loadedSymbol: RuneType | undefined = undefined;
     constructor(game: Game) {
         this.game = game;
@@ -23,6 +24,14 @@ export class Totem implements ITargetable {
                 thickness: 10,
             }),
         ]
+
+        this.glow = new Sprite(Assets.get("glow"));
+        this.glow.anchor.set(0.5);
+        this.glow.scale.set(20);
+        this.glow.tint = 0x000000;
+        this.glow.visible = false;
+        game.glowContainer.addChild(this.glow);
+
         game.genericUpdatables.add(this);
         game.player.registerTarget(this);
         game.poiContainer.addChild(this.sprite);
@@ -36,6 +45,7 @@ export class Totem implements ITargetable {
 
     onSpell(rune: RuneType): void {
         this.loadedSymbol = rune;
+        this.glow.visible = true;
         this.sprite.texture = Assets.get("totemLit");
     }
 
@@ -85,5 +95,6 @@ export class Totem implements ITargetable {
         }
 
         this.sprite.position.set(...this.position.xy());
+        this.glow.position.set(...this.position.xy());
     }
 }
