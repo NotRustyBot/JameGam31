@@ -240,7 +240,7 @@
     { "template": { "name": "path", "image": "path" }, "position": { "x": 14695.44999999999, "y": 4184.949999999995 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 14687.749999999989, "y": 3680.599999999996 } },
     { "template": { "name": "path", "image": "path" }, "position": { "x": 14687.749999999989, "y": 3615.149999999996 } },
-    { "template": { "name": "wizard", "image": "wizard", "health": 12, "family": "default", "scale": 0.5, "tag": "wizardBoss" }, "position": { "x": 14660.79999999999, "y": 3461.149999999996 } },
+    { "template": { "name": "wizard", "image": "wizard", "health": 6, "family": "default", "scale": 0.5, "tag": "wizardBoss" }, "position": { "x": 14660.79999999999, "y": 3461.149999999996 } },
     { "template": { "name": "wizard", "image": "wizard", "health": 2, "family": "arcane", "type": 1 }, "position": { "x": 14999.59999999999, "y": 3561.249999999996 } },
     { "template": { "name": "wizard", "image": "wizard", "health": 2, "family": "default", "scale": 0.5 }, "position": { "x": 14341.249999999989, "y": 3530.449999999996 } },
     { "template": { "name": "campfire", "image": "campfire", "scale": 0.5, "tag": "campfire3" }, "position": { "x": 17009, "y": 5260 } },
